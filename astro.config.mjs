@@ -10,10 +10,12 @@ export default defineConfig({
   site: process.env.PUBLIC_SITE_URL || 'https://example.com',
   integrations: [sitemap()],
   build: {
-    // Trait 6: Astro inlines small stylesheets, externalizes larger ones.
-    // scripts/async-css.mjs converts the externalized bundles to async via the
-    // media="print" onload swap so they never block first paint.
-    inlineStylesheets: 'auto',
+    // Total CSS for this site is small (~9KB), so inline it all into <head>.
+    // This avoids the FOUC that 'auto' + async-css causes here: the whole
+    // stylesheet gets externalized and deferred (media=print swap) with no
+    // hand-rolled critical CSS, so the page paints unstyled for a beat.
+    // Per SMP guidance, prefer 'always' over async-css when CSS < 50KB.
+    inlineStylesheets: 'always',
   },
   vite: {
     server: { allowedHosts: ['preview.spiritmediapublishing.com'] },
