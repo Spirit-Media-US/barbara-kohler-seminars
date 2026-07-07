@@ -1,36 +1,25 @@
 ---
-// SMP Site Layout — 100 Club ready out of the box.
-//
-// This layout already implements the structural pieces of every trait:
-//   - <slot name="head"> for per-page hero preload (Trait 2)
-//   - System-font fallback by default (Trait 4 alternative — replace with
-//     R2 self-hosted woff2 preloads via /home/deploy/bin/gfonts-to-r2.mjs
-//     once a brand font is chosen)
-//   - Deferred third-party JS pattern below (Trait 5) — wire GA/GTM by
-//     filling in the GTM_ID const and uncommenting the script
-//   - public/_headers ships CSP + X-Robots-Tag + Link: Early Hints
-//   - astro.config has inlineStylesheets:'auto' (Trait 6)
-//
-// HundredClubBadge auto-renders once this site's slug is added to
-// https://assets.spiritmediapublishing.com/100club-sites.json.
+// Barbara Kohler Seminars — site shell (header + footer + brand CSS).
+// Design source: Kevin's redesign markup (sapphire/gold, system fonts).
 import HundredClubBadge from '../components/HundredClubBadge.astro';
 
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
   ogImage?: string;
 }
 const {
-  title,
-  description = 'Replace this default description in src/layouts/Layout.astro',
-  ogImage,
+  title = 'Barbara Kohler Seminars | Online Classes to Change Your Life',
+  description = 'Faith-based online classes from a Biblical worldview. Learn Judicial Prayer and break out of old patterns. From Barbara Kohler, MS, CRC, LCMHC, NCC.',
+  ogImage = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/logo.png',
 } = Astro.props;
 const currentYear = new Date().getFullYear();
 const siteOrigin = (Astro.site && Astro.site.toString().replace(/\/$/, '')) || '';
 const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href : Astro.url.pathname;
-
-// Replace SITE_NAME with the human-readable site name once it's known.
-const SITE_NAME = 'SITE_NAME';
+const LOGO = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/logo.png';
+// TODO(Kevin): real social URLs
+const YT = '#';
+const IG = '#';
 ---
 <!doctype html>
 <html lang="en">
@@ -40,80 +29,210 @@ const SITE_NAME = 'SITE_NAME';
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="canonical" href={canonicalURL} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <!-- Font preloads (Trait 4) — uncomment and replace once gfonts-to-r2.mjs adds the family.
-         Self-hosted from R2: assets.spiritmediapublishing.com/fonts/<slug>/<slug>-<weight>.woff2.
-         Keep to 2-3 preloads max. Every paired @font-face block in global.css must carry
-         font-display: optional. Until a webfont is wired, system fonts handle Trait 4 by alternative. -->
-    <!-- <link rel="preload" as="font" type="font/woff2" href="https://assets.spiritmediapublishing.com/fonts/FAMILY/FAMILY-400.woff2" crossorigin /> -->
-
-    <!-- Critical CSS (Trait 6) — when adding hand-rolled <style is:inline> blocks,
-         wrap their contents in @layer base { ... }. Unlayered rules outrank every
-         Tailwind @layer (theme/base/components/utilities) and silently strip
-         responsive utilities below the fold. Two at-rules stay at top level
-         (CSS spec forbids them inside @layer): font-face declarations and keyframes. -->
-
-    <!-- Open Graph / Twitter -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:image" content={ogImage} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-
-    <!-- JSON-LD Organization stub — fill in once brand details are confirmed.
-    <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": SITE_NAME,
-      "url": siteOrigin,
-      "logo": ogImage,
-    })}></script>
-    -->
-
-    <!-- Per-page <head> additions (hero preload links live here — Trait 2) -->
     <slot name="head" />
+    <style is:global>
+      :root{
+        --sapphire:#1F5C99; --sapphire-deep:#123A63; --navy-ink:#0B2440;
+        --gold:#C9A227; --gold-bright:#E2B93B; --gold-pale:#F3E8C8;
+        --paper:#FFFFFF; --paper-soft:#F6F8FB; --ink:#1C242E; --ink-soft:#44505E;
+        --rule:rgba(31,92,153,.18); --max:1120px;
+        --sans:Arial, Helvetica, "Segoe UI", sans-serif;
+        --serif:Georgia, "Times New Roman", serif;
+      }
+      *{margin:0;padding:0;box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        *,*::before,*::after{animation:none!important;transition:none!important}
+      }
+      body{font-family:var(--serif);color:var(--ink);background:var(--paper);font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased}
+      img{max-width:100%;display:block}
+      a{color:var(--sapphire)}
+      .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+      h1,h2,h3,h4,.btn,nav{font-family:var(--sans)}
+      .eyebrow{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+      .eyebrow.on-light{color:#9A7B14}
+      h1{font-size:clamp(34px,5vw,56px);line-height:1.12;font-weight:800;letter-spacing:-.01em}
+      h2{font-size:clamp(26px,3.6vw,38px);line-height:1.15;font-weight:800;letter-spacing:-.01em;color:var(--navy-ink)}
+      h3{font-size:21px;font-weight:700;color:var(--navy-ink)}
+      .lede{font-size:clamp(19px,2.2vw,22px);color:var(--ink-soft)}
+      .scroll-rule{display:flex;align-items:center;gap:10px;margin:18px 0 26px}
+      .scroll-rule::before,.scroll-rule::after{content:"";flex:0 0 64px;height:1px;background:var(--gold);box-shadow:0 3px 0 var(--gold)}
+      .scroll-rule span{width:9px;height:9px;background:var(--gold);transform:rotate(45deg);flex:none}
+      .scroll-rule.center{justify-content:center}
+      .btn{display:inline-block;font-weight:700;font-size:15px;letter-spacing:.04em;padding:15px 30px;border-radius:4px;text-decoration:none;cursor:pointer;border:2px solid transparent;transition:background .15s,color .15s,border-color .15s}
+      .btn-gold{background:var(--gold);color:var(--navy-ink)}
+      .btn-gold:hover{background:var(--gold-bright)}
+      .btn-outline-light{border-color:rgba(255,255,255,.55);color:#fff}
+      .btn-outline-light:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+      .btn-sapphire{background:var(--sapphire);color:#fff}
+      .btn-sapphire:hover{background:var(--sapphire-deep)}
+      .btn:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+      header#top-header{position:sticky;top:0;z-index:50;background:var(--navy-ink);border-bottom:1px solid rgba(255,255,255,.08)}
+      .topline{background:var(--sapphire-deep);font-family:var(--sans);font-size:13px;color:#CFE0F2;text-align:center;padding:7px 12px;letter-spacing:.02em}
+      .topline a{color:var(--gold-bright);text-decoration:none;font-weight:700}
+      .nav-row{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 24px;max-width:var(--max);margin:0 auto}
+      .logo img{height:58px;width:auto}
+      nav.main{display:flex;align-items:center;gap:26px}
+      nav.main a{color:#E8EEF5;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+      nav.main a:hover{color:var(--gold-bright)}
+      .nav-actions{display:flex;align-items:center;gap:14px}
+      .social{display:flex;gap:10px}
+      .social a{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff}
+      .social a:hover{background:var(--gold);color:var(--navy-ink)}
+      .social svg{width:18px;height:18px;fill:currentColor}
+      .cart-btn{display:flex;align-items:center;gap:8px;background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:4px;padding:8px 14px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer}
+      .cart-btn:hover{border-color:var(--gold-bright);color:var(--gold-bright)}
+      .menu-toggle{display:none;background:none;border:0;color:#fff;font-size:26px;cursor:pointer}
+      section{padding:84px 0}
+      .section-head{max-width:720px}
+      .section-head.center{margin:0 auto;text-align:center}
+      .soft{background:var(--paper-soft)}
+      .hero{background:radial-gradient(1100px 520px at 78% -10%, rgba(226,185,59,.14), transparent 60%),linear-gradient(165deg, var(--navy-ink) 0%, var(--sapphire-deep) 58%, var(--sapphire) 115%);color:#fff;padding:88px 0 96px;position:relative;overflow:hidden}
+      .hero::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(to bottom, rgba(255,255,255,.03) 0 1px, transparent 1px 56px)}
+      .hero .wrap{position:relative;z-index:1;max-width:880px;text-align:center}
+      .hero .eyebrow{margin-bottom:18px;display:block}
+      .hero p.sub{font-family:var(--serif);font-size:clamp(19px,2.4vw,23px);color:#D8E4F1;max-width:640px;margin:24px auto 36px}
+      .hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+      .hero-verse{margin-top:56px;font-family:var(--serif);font-style:italic;color:#BBD0E6;font-size:16px}
+      .hero-verse b{color:var(--gold-bright);font-style:normal;font-family:var(--sans);font-size:12px;letter-spacing:.18em;display:block;margin-top:6px}
+      .series-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start;margin-top:12px}
+      .series-points{list-style:none;display:grid;gap:16px}
+      .series-points li{padding-left:30px;position:relative;color:var(--ink-soft);font-size:17px}
+      .series-points li::before{content:"";position:absolute;left:2px;top:9px;width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
+      .series-points li strong{color:var(--navy-ink)}
+      .courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:44px}
+      .course-card{background:#fff;border:1px solid var(--rule);border-radius:8px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 2px rgba(11,36,64,.05)}
+      .course-band{background:linear-gradient(150deg,var(--sapphire-deep),var(--sapphire));color:#fff;padding:26px 26px 22px}
+      .course-band .level{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold-bright);text-transform:uppercase}
+      .course-band h3{color:#fff;margin-top:8px;font-size:23px;line-height:1.2}
+      .course-body{padding:24px 26px 28px;display:flex;flex-direction:column;gap:16px;flex:1}
+      .course-body p{color:var(--ink-soft);font-size:16.5px}
+      .course-meta{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:18px;border-top:1px solid var(--rule)}
+      .price{font-family:var(--sans);font-weight:800;font-size:24px;color:var(--navy-ink)}
+      .price small{font-size:13px;font-weight:700;color:var(--ink-soft);display:block;letter-spacing:.06em}
+      .badge-soon{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9A7B14;background:var(--gold-pale);padding:6px 12px;border-radius:999px}
+      .course-card.soon{border-style:dashed}
+      .course-card.soon .course-band{background:linear-gradient(150deg,#3D4A58,#5A6B7D)}
+      .lessons{margin-top:40px;border-top:1px solid var(--rule)}
+      .lesson{display:grid;grid-template-columns:120px 1fr;gap:28px;padding:26px 0;border-bottom:1px solid var(--rule);align-items:start}
+      .lesson-no{font-family:var(--sans);font-weight:800;color:var(--sapphire);font-size:14px;letter-spacing:.16em;text-transform:uppercase;padding-top:4px}
+      .lesson h3{font-size:19px;margin-bottom:6px}
+      .lesson p{color:var(--ink-soft);font-size:16.5px}
+      .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:44px}
+      .step{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:30px 26px}
+      .step .k{font-family:var(--sans);font-weight:800;color:var(--gold);font-size:13px;letter-spacing:.2em;text-transform:uppercase}
+      .step h3{margin:10px 0 8px;font-size:19px}
+      .step p{color:var(--ink-soft);font-size:16px}
+      .verse-band{background:var(--navy-ink);color:#fff;text-align:center;padding:64px 24px}
+      .verse-band blockquote{font-family:var(--serif);font-style:italic;font-size:clamp(20px,3vw,27px);line-height:1.5;max-width:820px;margin:0 auto;color:#EAF1F8}
+      .verse-band cite{display:block;margin-top:18px;font-style:normal;font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.22em;color:var(--gold-bright);text-transform:uppercase}
+      .about-grid{display:grid;grid-template-columns:340px 1fr;gap:56px;align-items:start}
+      .about-photo{border-radius:8px;overflow:hidden;border:1px solid var(--rule);box-shadow:0 12px 30px rgba(11,36,64,.14)}
+      .about-photo img{width:100%;height:auto}
+      .creds{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:.14em;color:#9A7B14;text-transform:uppercase;margin:6px 0 18px}
+      .about-grid p{color:var(--ink-soft);margin-bottom:16px}
+      .subscribe{background:linear-gradient(150deg,var(--sapphire-deep),var(--sapphire));color:#fff;border-radius:12px;padding:52px;display:grid;grid-template-columns:1fr 200px;gap:44px;align-items:center}
+      .subscribe h2{color:#fff}
+      .subscribe p{color:#D8E4F1;margin:14px 0 24px;font-size:17px}
+      .sub-form{display:flex;gap:12px;flex-wrap:wrap}
+      .sub-form input{flex:1;min-width:200px;padding:14px 16px;border-radius:4px;border:0;font-family:var(--serif);font-size:16px}
+      .ebook img{border-radius:6px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+      .fine{font-size:13px;color:#AFC6DC;margin-top:14px}
+      footer#site-footer{background:var(--navy-ink);color:#C6D5E4;padding:64px 0 32px;font-size:15px}
+      .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:44px}
+      footer#site-footer h4{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright);margin-bottom:16px}
+      footer#site-footer a{color:#E4ECF4;text-decoration:none}
+      footer#site-footer a:hover{color:var(--gold-bright)}
+      .foot-logo img{height:64px;width:auto;margin-bottom:18px}
+      .foot-list{list-style:none;display:grid;gap:10px}
+      .legal{border-top:1px solid rgba(255,255,255,.12);margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13.5px;color:#8DA5BD}
+      @media (max-width:900px){
+        .series-grid,.about-grid{grid-template-columns:1fr}
+        .steps{grid-template-columns:1fr}
+        .subscribe{grid-template-columns:1fr;padding:36px 28px}
+        .ebook{display:none}
+        .foot-grid{grid-template-columns:1fr}
+        nav.main{display:none;position:absolute;top:100%;left:0;right:0;background:var(--navy-ink);flex-direction:column;align-items:flex-start;padding:20px 24px;gap:18px;border-bottom:1px solid rgba(255,255,255,.12)}
+        nav.main.open{display:flex}
+        .menu-toggle{display:block}
+        .lesson{grid-template-columns:1fr;gap:6px}
+        section{padding:64px 0}
+      }
+    </style>
   </head>
   <body>
-    <header id="site-header" class="container-site flex items-center justify-between" style="padding: 16px 24px;">
-      <a href="/" style="font-weight: 700;">{SITE_NAME}</a>
-      <nav>
-        <a href="/">Home</a>
-      </nav>
+    <header id="top-header">
+      <div class="topline">
+        Questions about a class or hosting a live seminar? Call <a href="tel:+12522145107">(252) 214-5107</a>
+      </div>
+      <div class="nav-row">
+        <a class="logo" href="/" aria-label="Barbara Kohler Seminars home">
+          <img src={LOGO} alt="Barbara Kohler Seminars" width="216" height="119" />
+        </a>
+        <button class="menu-toggle" aria-label="Open menu" onclick="document.getElementById('mainnav').classList.toggle('open')">&#9776;</button>
+        <nav class="main" id="mainnav" aria-label="Main">
+          <a href="/#classes">Classes</a>
+          <a href="/#curriculum">Curriculum</a>
+          <a href="/#about">About Barbara</a>
+          <a href="/blog">Blog</a>
+          <a href="/#contact">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="social">
+            <a href={YT} aria-label="Barbara Kohler Seminars on YouTube" title="YouTube">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4L15.8 12l-6.2 3.6z"/></svg>
+            </a>
+            <a href={IG} aria-label="Barbara Kohler Seminars on Instagram" title="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 1.2.1 1.9.2 2.3.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1.1.4 2.3.1 1.2.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 1.2-.2 1.9-.4 2.3-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.4-2.3.4-1.2.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-1.2-.1-1.9-.2-2.3-.4a3.8 3.8 0 0 1-1.4-.9 3.8 3.8 0 0 1-.9-1.4c-.2-.4-.4-1.1-.4-2.3C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8c.1-1.2.2-1.9.4-2.3.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.4 2.3-.4C8.4 2.2 8.8 2.2 12 2.2z"/></svg>
+            </a>
+          </div>
+          <button class="cart-btn" aria-label="View cart">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 14h9.9c.9 0 1.7-.6 1.9-1.5l2-8A1 1 0 0 0 20 3H5.2l-.4-2H1v2h2.2l2.5 11.2A2 2 0 0 0 7.2 14z"/></svg>
+            Cart
+          </button>
+        </div>
+      </div>
     </header>
 
     <slot />
 
-    <footer style="padding: 32px 24px; border-top: 1px solid var(--color-border, #e5e5e5);">
-      <div class="container-site" style="display: flex; flex-direction: column; gap: 8px;">
-        <p style="margin: 0; font-size: 13px;">
-          &copy; {currentYear} {SITE_NAME}. All rights reserved. &bull; Powered by <a href="https://spiritmediapublishing.com">Spirit Media</a>
-          <HundredClubBadge />
-        </p>
+    <footer id="site-footer">
+      <div class="wrap">
+        <div class="foot-grid">
+          <div>
+            <div class="foot-logo"><img src={LOGO} alt="Barbara Kohler Seminars" width="238" height="131" /></div>
+            <p>Personal growth seminars from a Biblical worldview &mdash; helping people overcome obstacles and step into the life God has planned for them.</p>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <ul class="foot-list">
+              <li><a href="tel:+12522145107">(252) 214-5107</a></li>
+              <li><a href="mailto:barbara@barbarakohlerseminars.com">barbara@barbarakohlerseminars.com</a></li>
+              <li>Daetwyler Plaza Building<br>13420 Reese Blvd W<br>Huntersville, NC 28078</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Follow Barbara</h4>
+            <ul class="foot-list">
+              <li><a href={YT}>YouTube</a></li>
+              <li><a href={IG}>Instagram</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="https://www.thekohlergroup.net">The Kohler Group (Counseling)</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="legal">
+          <span>&copy; {currentYear} Barbara Kohler Seminars, PLLC. All rights reserved. <HundredClubBadge /></span>
+          <a href="/legal-information">Legal information</a>
+        </div>
       </div>
     </footer>
-
-    <!-- Deferred third-party JS pattern (Trait 5) — copy this block when wiring GA/GTM/Calendly/Stripe/etc.
-         Loads only after first user interaction (or 8s fallback) so it never blocks the LCP path.
-    <script is:inline>
-      const loadAnalytics = () => {
-        if (window._smpAnalyticsLoaded) return;
-        window._smpAnalyticsLoaded = true;
-        const s = document.createElement('script');
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=GTM_ID';
-        s.async = true;
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ window.dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'GTM_ID');
-      };
-      ['scroll', 'click', 'touchstart', 'keydown', 'mousemove'].forEach((e) =>
-        window.addEventListener(e, loadAnalytics, { once: true, passive: true })
-      );
-      setTimeout(loadAnalytics, 8000);
-    </script>
-    -->
   </body>
 </html>
