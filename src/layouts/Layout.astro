@@ -16,7 +16,7 @@ const {
 const currentYear = new Date().getFullYear();
 const siteOrigin = (Astro.site && Astro.site.toString().replace(/\/$/, '')) || '';
 const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href : Astro.url.pathname;
-const LOGO = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/logo.png';
+const LOGO = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/logo-tight.png';
 // TODO(Kevin): real social URLs
 const YT = '#';
 const IG = '#';
@@ -174,7 +174,7 @@ const IG = '#';
       </div>
       <div class="nav-row">
         <a class="logo" href="/" aria-label="Barbara Kohler Seminars home">
-          <img src={LOGO} alt="Barbara Kohler Seminars" width="216" height="119" />
+          <img src={LOGO} alt="Barbara Kohler Seminars" width="178" height="58" />
         </a>
         <button class="menu-toggle" aria-label="Open menu" onclick="document.getElementById('mainnav').classList.toggle('open')">&#9776;</button>
         <nav class="main" id="mainnav" aria-label="Main">
@@ -207,7 +207,7 @@ const IG = '#';
       <div class="wrap">
         <div class="foot-grid">
           <div>
-            <div class="foot-logo"><img src={LOGO} alt="Barbara Kohler Seminars" width="238" height="131" /></div>
+            <div class="foot-logo"><img src={LOGO} alt="Barbara Kohler Seminars" width="197" height="64" /></div>
             <p>Personal growth seminars from a Biblical worldview &mdash; helping people overcome obstacles and step into the life God has planned for them.</p>
           </div>
           <div>
