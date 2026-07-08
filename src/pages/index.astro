@@ -8,7 +8,7 @@ const h = await safeFetch<any>(
   `*[_type=="homePage"][0]{
     heroEyebrow,heroHeading,heroSub,heroVerse,heroVerseRef,
     seriesEyebrow,seriesHeading,seriesLede,seriesBody,seriesPoints,
-    classesEyebrow,classesHeading,classesLede,curriculumEyebrow,curriculumHeading,
+    classesEyebrow,classesHeading,classesLede,seminarPhotos,curriculumEyebrow,curriculumHeading,
     verseBandQuote,verseBandRef,howEyebrow,howHeading,steps,
     aboutEyebrow,aboutName,aboutCreds,aboutParagraphs,headshot,
     subscribeEyebrow,subscribeHeading,subscribeBody,subscribeFinePrint,ebookCover
@@ -35,6 +35,8 @@ const lessons = primary.lessons || [];
 const HEADSHOT = h.headshot ? urlFor(h.headshot).width(680).url() : `${R2}/barbara-kohler.jpg`;
 const EBOOK = h.ebookCover ? urlFor(h.ebookCover).width(400).url() : `${R2}/ebook-cover.png`;
 const heroCtaLabel = `Enroll in Level One${primary.price ? ` — ${primary.price}` : ''}`;
+const seminarPhotos = h.seminarPhotos || [];
+const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto('format').url();
 ---
 <Layout>
   <main id="top">
@@ -110,6 +112,18 @@ const heroCtaLabel = `Enroll in Level One${primary.price ? ` — ${primary.price
         </div>
       </div>
     </section>
+
+    {seminarPhotos.length > 0 && (
+      <section class="seminar-photos" aria-label="Barbara teaching in seminars">
+        <div class="wrap">
+          <div class="photo-row">
+            {seminarPhotos.map((p: any) => (
+              <figure><img src={photoUrl(p)} alt={p.alt || ''} width="800" height="1067" loading="lazy" /></figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
 
     {lessons.length > 0 && (
       <section id="curriculum" aria-labelledby="curr-h">
@@ -198,4 +212,15 @@ const heroCtaLabel = `Enroll in Level One${primary.price ? ` — ${primary.price
       </div>
     </section>
   </main>
+
+  <style>
+    .seminar-photos{padding:80px 0 0}
+    .photo-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .photo-row figure{margin:0;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid var(--rule);box-shadow:0 10px 28px rgba(11,36,64,.12)}
+    .photo-row img{width:100%;height:100%;object-fit:cover;display:block}
+    @media (max-width:700px){
+      .seminar-photos{padding-top:56px}
+      .photo-row{grid-template-columns:1fr;max-width:420px;margin:0 auto;gap:16px}
+    }
+  </style>
 </Layout>

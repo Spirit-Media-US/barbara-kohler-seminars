@@ -49,6 +49,21 @@ export default defineType({
 		defineField({ name: 'classesEyebrow', title: 'Classes Eyebrow', type: 'string', group: 'classes' }),
 		defineField({ name: 'classesHeading', title: 'Classes Heading', type: 'string', group: 'classes' }),
 		defineField({ name: 'classesLede', title: 'Classes Lede', type: 'text', rows: 2, group: 'classes' }),
+		defineField({
+			name: 'seminarPhotos',
+			title: 'Seminar Photos (row of 3, shown above the curriculum)',
+			type: 'array',
+			group: 'classes',
+			description: 'Three images shown as a row before "Inside Level One" — typically seminar left, Barbara center, seminar right.',
+			of: [
+				{
+					type: 'image',
+					options: { hotspot: true },
+					fields: [{ name: 'alt', title: 'Alt Text', type: 'string' }],
+				},
+			],
+			validation: (r) => r.max(3),
+		}),
 		defineField({ name: 'curriculumEyebrow', title: 'Curriculum Eyebrow', type: 'string', group: 'classes' }),
 		defineField({ name: 'curriculumHeading', title: 'Curriculum Heading', type: 'string', group: 'classes' }),
 
