@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { sanityClient, urlFor } from '../lib/sanity';
+
+const posts = await sanityClient.fetch(
+  `*[_type=="blogPost" && defined(slug.current)] | order(publishDate desc){
+    title,"slug":slug.current,excerpt,author,publishDate,tags,heroImage
+  }`,
+);
+
+const allTags = Array.from(new Set((posts || []).flatMap((p: any) => p.tags || []))).sort();
+const fmt = (d: string) => {
+  if (!d) return '';
+  const dt = new Date(d);
+  return Number.isNaN(dt.getTime())
+    ? ''
+    : dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+};
+const img = (p: any) =>
+  p.heroImage ? urlFor(p.heroImage).width(800).height(480).format('webp').url() : null;
+---
+<Layout title="Blog | Barbara Kohler Seminars" description="Teaching, encouragement, and Biblical insight from Barbara Kohler Seminars.">
+  <section class="blog-head">
+    <div class="wrap">
+      <span class="eyebrow">The Blog</span>
+      <h1>Teaching, encouragement &amp; insight</h1>
+      <p class="lede">Reflections on faith, healing, and lasting change &mdash; from Barbara Kohler and the team.</p>
+    </div>
+  </section>
+
+  <section class="blog-list">
+    <div class="wrap">
+      {allTags.length > 0 && (
+        <div class="tag-filter" id="tag-filter">
+          <button class="tag-btn active" data-tag="all">All</button>
+          {allTags.map((t) => <button class="tag-btn" data-tag={t}>{t}</button>)}
+        </div>
+      )}
+      <div class="blog-grid" id="blog-grid">
+        {(posts || []).map((p: any) => (
+          <a class="blog-card" href={`/blog/${p.slug}`} data-tags={(p.tags || []).join('|')}>
+            {img(p) && <div class="blog-img"><img src={img(p)} alt={p.title} width="800" height="480" loading="lazy" /></div>}
+            <div class="blog-body">
+              {(p.tags || [])[0] && <span class="blog-tag">{(p.tags || [])[0]}</span>}
+              <h2>{p.title}</h2>
+              {p.excerpt && <p class="blog-excerpt">{p.excerpt}</p>}
+              <div class="blog-meta">{p.author}{p.publishDate && <> &middot; {fmt(p.publishDate)}</>}</div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const initial = params.get('tag');
+      const btns = Array.from(document.querySelectorAll('.tag-btn'));
+      const cards = Array.from(document.querySelectorAll('.blog-card'));
+      function apply(tag) {
+        btns.forEach((b) => b.classList.toggle('active', b.dataset.tag === tag));
+        cards.forEach((c) => {
+          const tags = (c.dataset.tags || '').split('|');
+          c.style.display = tag === 'all' || tags.includes(tag) ? '' : 'none';
+        });
+      }
+      btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.tag)));
+      if (initial && btns.some((b) => b.dataset.tag === initial)) apply(initial);
+    })();
+  </script>
+
+  <style is:global>
+    .blog-head{background:linear-gradient(165deg,var(--navy-ink),var(--sapphire-deep));color:#fff;padding:76px 0 64px;text-align:center}
+    .blog-head h1{font-size:clamp(32px,4.6vw,50px);line-height:1.12;margin-top:12px}
+    .blog-head .lede{color:#D8E4F1;max-width:620px;margin:18px auto 0}
+    .blog-list{padding:64px 0}
+    .tag-filter{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:44px}
+    .tag-btn{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sapphire);background:#fff;border:1px solid var(--rule);border-radius:999px;padding:8px 16px;cursor:pointer;transition:all .15s}
+    .tag-btn:hover{border-color:var(--sapphire)}
+    .tag-btn.active{background:var(--sapphire);color:#fff;border-color:var(--sapphire)}
+    .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px}
+    .blog-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--rule);border-radius:10px;overflow:hidden;text-decoration:none;transition:box-shadow .15s,transform .15s}
+    .blog-card:hover{box-shadow:0 12px 30px rgba(11,36,64,.13);transform:translateY(-3px)}
+    .blog-img{aspect-ratio:5/3;overflow:hidden}
+    .blog-img img{width:100%;height:100%;object-fit:cover;display:block}
+    .blog-body{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1}
+    .blog-tag{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9A7B14;margin-bottom:10px}
+    .blog-body h2{font-size:20px;color:var(--navy-ink);line-height:1.25;margin-bottom:10px}
+    .blog-excerpt{font-size:15px;color:var(--ink-soft);line-height:1.6;margin-bottom:16px;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .blog-meta{font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);letter-spacing:.02em}
+  </style>
+</Layout>

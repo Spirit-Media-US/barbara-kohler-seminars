@@ -1,26 +1,55 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const HEADSHOT = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/barbara-kohler.jpg';
-const EBOOK = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/ebook-cover.png';
-// INTERIM: Level One enroll points to the existing Wix checkout so the sale
-// path stays live in preview. Swap to Stripe Checkout once keys land
-// (data-product maps 1:1 to the Sanity course doc).
-const ENROLL_URL = 'https://www.barbarakohlerseminars.com/challenge-page/0d068d6d-5d99-4918-9fb9-fa4c450c2fe2?programId=0d068d6d-5d99-4918-9fb9-fa4c450c2fe2';
-const YT = 'https://www.youtube.com/@barbarakohlerseminarspllc1709';
-const FB = 'https://www.facebook.com/BarbaraKohlerSeminars/';
+import { safeFetch, urlFor } from '../lib/sanity';
+
+const R2 = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars';
+
+const h = await safeFetch<any>(
+  `*[_type=="homePage"][0]{
+    heroEyebrow,heroHeading,heroSub,heroVerse,heroVerseRef,
+    seriesEyebrow,seriesHeading,seriesLede,seriesBody,seriesPoints,
+    classesEyebrow,classesHeading,classesLede,curriculumEyebrow,curriculumHeading,
+    verseBandQuote,verseBandRef,howEyebrow,howHeading,steps,
+    aboutEyebrow,aboutName,aboutCreds,aboutParagraphs,headshot,
+    subscribeEyebrow,subscribeHeading,subscribeBody,subscribeFinePrint,ebookCover
+  }`,
+  {},
+  {},
+);
+
+const courses = await safeFetch<any[]>(
+  `*[_type=="course"] | order(order asc){
+    title,level,status,body,price,priceNote,badge,ctaLabel,ctaHref,order,lessons
+  }`,
+  {},
+  [],
+);
+
+const settings = await safeFetch<any>(`*[_type=="siteSettings"][0]{kohlerGroupUrl,youtube,facebook}`, {}, {});
+const YT = settings?.youtube || 'https://www.youtube.com/@barbarakohlerseminarspllc1709';
+const FB = settings?.facebook || 'https://www.facebook.com/BarbaraKohlerSeminars/';
+const KG = settings?.kohlerGroupUrl || 'https://www.thekohlergroup.net';
+
+const primary = courses.find((c) => c.status === 'available') || courses[0] || {};
+const lessons = primary.lessons || [];
+const HEADSHOT = h.headshot ? urlFor(h.headshot).width(680).url() : `${R2}/barbara-kohler.jpg`;
+const EBOOK = h.ebookCover ? urlFor(h.ebookCover).width(400).url() : `${R2}/ebook-cover.png`;
+const heroCtaLabel = `Enroll in Level One${primary.price ? ` — ${primary.price}` : ''}`;
 ---
 <Layout>
   <main id="top">
     <section class="hero" aria-labelledby="hero-h">
       <div class="wrap">
-        <span class="eyebrow">Online Classes &middot; Biblical Worldview &middot; Real Change</span>
-        <h1 id="hero-h">When you have tried everything you know, it is time to try something new.</h1>
-        <p class="sub">Break out of old patterns and lay hold of the life God has planned for you &mdash; through practical teaching, Scripture, and Judicial Prayer.</p>
+        <span class="eyebrow">{h.heroEyebrow}</span>
+        <h1 id="hero-h">{h.heroHeading}</h1>
+        <p class="sub">{h.heroSub}</p>
         <div class="hero-ctas">
-          <a class="btn btn-gold" href="#classes">Enroll in Level One &mdash; $99</a>
+          <a class="btn btn-gold" href="#classes">{heroCtaLabel}</a>
           <a class="btn btn-outline-light" href={YT}>Watch Barbara on YouTube</a>
         </div>
-        <p class="hero-verse">&ldquo;For the word of God is living and active and sharper than any two-edged sword&hellip;&rdquo;<b>Hebrews 4:12, NASB</b></p>
+        {h.heroVerse && (
+          <p class="hero-verse">{h.heroVerse}<b>{h.heroVerseRef}</b></p>
+        )}
       </div>
     </section>
 
@@ -28,19 +57,16 @@ const FB = 'https://www.facebook.com/BarbaraKohlerSeminars/';
       <div class="wrap">
         <div class="series-grid">
           <div>
-            <span class="eyebrow on-light">The Change Your Life Series</span>
-            <h2 id="series-h">Uproot the old script. Take hold of your scroll.</h2>
+            <span class="eyebrow on-light">{h.seriesEyebrow}</span>
+            <h2 id="series-h">{h.seriesHeading}</h2>
             <div class="scroll-rule"><span></span></div>
-            <p class="lede">Change Your Life is a series of teachings that helps you uproot the negative life script you have been walking in and lay hold of your scroll &mdash; your God-given destiny.</p>
-            <p style="margin-top:18px;color:var(--ink-soft)">Drawing on 30 years of clinical counseling experience and 25+ years of ministry, Barbara pairs sound teaching on personality and early life decisions with the Courts of Heaven revelation &mdash; grounded in Scripture, practical, and never goofy.</p>
+            <p class="lede">{h.seriesLede}</p>
+            {h.seriesBody && <p style="margin-top:18px;color:var(--ink-soft)">{h.seriesBody}</p>}
           </div>
           <ul class="series-points" aria-label="What you will learn">
-            <li><strong>Understand</strong> your early life decisions and how your personality formed.</li>
-            <li><strong>Uproot</strong> the things that do not belong in your life &mdash; you choose the targets.</li>
-            <li><strong>Use Judicial Prayer</strong> to clear out unbelief and make new declarations.</li>
-            <li><strong>Land your prophecies</strong> &mdash; bring heavenly promises into the earthly realm.</li>
-            <li><strong>Close the gap</strong> between what God has said and what you are experiencing.</li>
-            <li><strong>Govern your life</strong> under the King of kings instead of letting life happen to you.</li>
+            {(h.seriesPoints || []).map((p: any) => (
+              <li><strong>{p.lead}</strong> {p.text}</li>
+            ))}
           </ul>
         </div>
       </div>
@@ -49,111 +75,83 @@ const FB = 'https://www.facebook.com/BarbaraKohlerSeminars/';
     <section id="classes" class="soft" aria-labelledby="classes-h">
       <div class="wrap">
         <div class="section-head center">
-          <span class="eyebrow on-light">Classes</span>
-          <h2 id="classes-h">Start where you are. Grow level by level.</h2>
+          <span class="eyebrow on-light">{h.classesEyebrow}</span>
+          <h2 id="classes-h">{h.classesHeading}</h2>
           <div class="scroll-rule center"><span></span></div>
-          <p class="lede">One class is open for enrollment today, with more on the way. Every class includes a detailed workbook with exercises.</p>
+          <p class="lede">{h.classesLede}</p>
         </div>
 
         <div class="courses">
-          <article class="course-card">
-            <div class="course-band">
-              <span class="level">Level One &middot; Available Now</span>
-              <h3>From Script to Scroll</h3>
-            </div>
-            <div class="course-body">
-              <p>Learn to flow in Judicial Prayer to facilitate lasting change in your life. Engage Father God as the Righteous Judge of the Universe, who extends His mercy to you through the precious blood of Christ.</p>
-              <p>Five lessons covering how to prepare your case, discover God&rsquo;s plan for your life, come out of script, understand your personality, and build a successful prayer life.</p>
-              <div class="course-meta">
-                <span class="price">$99 <small>One-time enrollment</small></span>
-                <a class="btn btn-sapphire" href={ENROLL_URL} data-product="level-one-from-script-to-scroll">Enroll now</a>
+          {courses.map((c: any) => (
+            <article class={`course-card${c.status !== 'available' ? ' soon' : ''}`}>
+              <div class="course-band">
+                <span class="level">{c.level}</span>
+                <h3>{c.title}</h3>
               </div>
-            </div>
-          </article>
-
-          <article class="course-card soon">
-            <div class="course-band">
-              <span class="level">Level Two &middot; In Production</span>
-              <h3>Crossing Thresholds into Destiny</h3>
-            </div>
-            <div class="course-body">
-              <p>Identify the stronghold areas you want to target and learn to dismantle them one brick at a time until the whole wall collapses &mdash; developing character through persistence in a grace-oriented atmosphere.</p>
-              <p>Currently offered as a live class for churches and small groups. Call <a href="tel:+12522145107">(252) 214-5107</a> to schedule.</p>
-              <div class="course-meta">
-                <span class="badge-soon">Video course coming soon</span>
-                <a class="btn btn-outline-sapphire" href="#subscribe">Notify me</a>
+              <div class="course-body">
+                {(c.body || []).map((para: string) => <p>{para}</p>)}
+                <div class="course-meta">
+                  {c.status === 'available' && c.price ? (
+                    <span class="price">{c.price} <small>{c.priceNote}</small></span>
+                  ) : (
+                    c.badge && <span class="badge-soon">{c.badge}</span>
+                  )}
+                  {c.ctaLabel && (
+                    <a
+                      class={`btn ${c.status === 'available' ? 'btn-sapphire' : 'btn-outline-sapphire'}`}
+                      href={c.ctaHref || '#subscribe'}
+                      data-product={c.status === 'available' ? 'level-one-from-script-to-scroll' : undefined}
+                    >{c.ctaLabel}</a>
+                  )}
+                </div>
               </div>
-            </div>
-          </article>
-
-          <article class="course-card soon" aria-label="Future classes">
-            <div class="course-band">
-              <span class="level">The Catalog Is Growing</span>
-              <h3>More Classes to Follow</h3>
-            </div>
-            <div class="course-body">
-              <p>New teachings in the Change Your Life Series are in development. Subscribe below and you will be the first to know when enrollment opens.</p>
-              <div class="course-meta">
-                <span class="badge-soon">In development</span>
-                <a class="btn btn-outline-sapphire" href="#subscribe">Stay updated</a>
-              </div>
-            </div>
-          </article>
+            </article>
+          ))}
         </div>
       </div>
     </section>
 
-    <section id="curriculum" aria-labelledby="curr-h">
-      <div class="wrap">
-        <div class="section-head">
-          <span class="eyebrow on-light">Inside Level One</span>
-          <h2 id="curr-h">Five lessons. One life-changing framework.</h2>
-          <div class="scroll-rule"><span></span></div>
-        </div>
-        <div class="lessons">
-          <div class="lesson">
-            <div class="lesson-no">Lesson One</div>
-            <div><h3>Preparing Your Case</h3><p>How Scripture gives us permission to approach God as Judge, why it is to your benefit, and how to effectively prepare your case so you can have victory in your life.</p></div>
+    {lessons.length > 0 && (
+      <section id="curriculum" aria-labelledby="curr-h">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow on-light">{h.curriculumEyebrow}</span>
+            <h2 id="curr-h">{h.curriculumHeading}</h2>
+            <div class="scroll-rule"><span></span></div>
           </div>
-          <div class="lesson">
-            <div class="lesson-no">Lesson Two</div>
-            <div><h3>Your Scroll &mdash; God&rsquo;s Plan for Your Life</h3><p>God has written a book about you and wants to share His plans and purposes with you. Study Scripture and take part in an activation that is both Biblical and experiential.</p></div>
+          <div class="lessons">
+            {lessons.map((l: any) => (
+              <div class="lesson">
+                <div class="lesson-no">{l.number}</div>
+                <div><h3>{l.title}</h3><p>{l.description}</p></div>
+              </div>
+            ))}
           </div>
-          <div class="lesson">
-            <div class="lesson-no">Lesson Three</div>
-            <div><h3>Coming Out of Script</h3><p>Many of us grew up with negative impressions of life, ourselves, and our family &mdash; strategically planned by the enemy. Learn how to come out of script and pursue the plan God crafted just for you.</p></div>
-          </div>
-          <div class="lesson">
-            <div class="lesson-no">Lesson Four</div>
-            <div><h3>Your Life and Personality</h3><p>God wants to heal your emotions and personality. Learn how the personality develops and how to discern the voice of God from your own voice.</p></div>
-          </div>
-          <div class="lesson">
-            <div class="lesson-no">Lesson Five</div>
-            <div><h3>Becoming Successful in Your Prayer Life</h3><p>Build a successful prayer life, learn to deal with obstacles such as dissociation, and get an introduction to threshold issues &mdash; a major stumbling block to moving forward in life.</p></div>
+          <div style="text-align:center;margin-top:44px">
+            <a class="btn btn-gold" href="#classes">{heroCtaLabel}</a>
           </div>
         </div>
-        <div style="text-align:center;margin-top:44px">
-          <a class="btn btn-gold" href="#classes">Enroll in Level One &mdash; $99</a>
-        </div>
-      </div>
-    </section>
+      </section>
+    )}
 
-    <div class="verse-band" role="complementary" aria-label="Scripture">
-      <blockquote>&ldquo;Do not be conformed to this world, but be transformed by the renewing of your mind, so that you may prove what the will of God is, that which is good and acceptable and perfect.&rdquo;</blockquote>
-      <cite>Romans 12:2, NASB</cite>
-    </div>
+    {h.verseBandQuote && (
+      <div class="verse-band" role="complementary" aria-label="Scripture">
+        <blockquote>{h.verseBandQuote}</blockquote>
+        <cite>{h.verseBandRef}</cite>
+      </div>
+    )}
 
     <section class="soft" aria-labelledby="how-h">
       <div class="wrap">
         <div class="section-head center">
-          <span class="eyebrow on-light">How It Works</span>
-          <h2 id="how-h">Simple to start. Built to last.</h2>
+          <span class="eyebrow on-light">{h.howEyebrow}</span>
+          <h2 id="how-h">{h.howHeading}</h2>
           <div class="scroll-rule center"><span></span></div>
         </div>
         <div class="steps">
-          <div class="step"><span class="k">Step One</span><h3>Enroll online</h3><p>Secure checkout gives you immediate access to the class and your detailed workbook with exercises.</p></div>
-          <div class="step"><span class="k">Step Two</span><h3>Learn at your pace</h3><p>Work through the lessons on your schedule &mdash; on your own, or with a small group where students share and pray together.</p></div>
-          <div class="step"><span class="k">Step Three</span><h3>Pray and apply</h3><p>Put Judicial Prayer into practice, make new declarations, and watch God bring real and lasting change.</p></div>
+          {(h.steps || []).map((s: any) => (
+            <div class="step"><span class="k">{s.label}</span><h3>{s.title}</h3><p>{s.body}</p></div>
+          ))}
         </div>
       </div>
     </section>
@@ -162,15 +160,14 @@ const FB = 'https://www.facebook.com/BarbaraKohlerSeminars/';
       <div class="wrap">
         <div class="about-grid">
           <div class="about-photo">
-            <img src={HEADSHOT} alt="Barbara Kohler, MS, CRC, LCMHC, NCC" width="340" height="453" />
+            <img src={HEADSHOT} alt={`${h.aboutName || 'Barbara Kohler'}, ${h.aboutCreds || ''}`} width="340" height="453" />
           </div>
           <div>
-            <span class="eyebrow on-light">Meet Barbara</span>
-            <h2 id="about-h">Barbara Kohler</h2>
-            <p class="creds">MS &middot; CRC &middot; LCMHC &middot; NCC</p>
-            <p>Barbara Kohler is a Licensed Clinical Mental Health Counselor with 30 years of professional counseling experience and more than 25 years of Christian ministry and teaching. God led Barbara to begin teaching the business and restoration principles she has successfully used in her private practice.</p>
-            <p>Students know Barbara for her grace-oriented atmosphere &mdash; a place where you can fall forward, learn persistence, and grow in both character and faith.</p>
-            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href="https://www.thekohlergroup.net">The Kohler Group</a>.</p>
+            <span class="eyebrow on-light">{h.aboutEyebrow}</span>
+            <h2 id="about-h">{h.aboutName}</h2>
+            <p class="creds">{h.aboutCreds}</p>
+            {(h.aboutParagraphs || []).map((para: string) => <p>{para}</p>)}
+            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href={KG}>The Kohler Group</a>.</p>
             <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
               <a class="btn btn-sapphire" href={YT}>YouTube Channel</a>
               <a class="btn btn-outline-sapphire" href={FB}>Follow on Facebook</a>
@@ -184,15 +181,15 @@ const FB = 'https://www.facebook.com/BarbaraKohlerSeminars/';
       <div class="wrap">
         <div class="subscribe">
           <div>
-            <span class="eyebrow">Free eBook</span>
-            <h2 id="sub-h">Break free of negative life patterns.</h2>
-            <p>Subscribe to the mailing list and receive a free eBook &mdash; discover how God redeems negative things, learn to stop negative thoughts, and get a worksheet to identify the root cause of repeating patterns. You will also be the first to hear when new classes open.</p>
+            <span class="eyebrow">{h.subscribeEyebrow}</span>
+            <h2 id="sub-h">{h.subscribeHeading}</h2>
+            <p>{h.subscribeBody}</p>
             <form class="sub-form" name="ebook-signup" data-ghl-form="ebook" onsubmit="return false;">
               <input type="text" placeholder="First name" aria-label="First name" />
               <input type="email" placeholder="Email address" aria-label="Email address" />
               <button class="btn btn-gold" type="submit">Send my eBook</button>
             </form>
-            <p class="fine">No spam &mdash; just teaching, encouragement, and class announcements.</p>
+            <p class="fine">{h.subscribeFinePrint}</p>
           </div>
           <div class="ebook">
             <img src={EBOOK} alt="Free eBook: Break Free of Negative Life Patterns" width="200" height="267" />
