@@ -6,6 +6,8 @@ const EBOOK = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars/
 // path stays live in preview. Swap to Stripe Checkout once keys land
 // (data-product maps 1:1 to the Sanity course doc).
 const ENROLL_URL = 'https://www.barbarakohlerseminars.com/challenge-page/0d068d6d-5d99-4918-9fb9-fa4c450c2fe2?programId=0d068d6d-5d99-4918-9fb9-fa4c450c2fe2';
+const YT = 'https://www.youtube.com/@barbarakohlerseminarspllc1709';
+const FB = 'https://www.facebook.com/BarbaraKohlerSeminars/';
 ---
 <Layout>
   <main id="top">
@@ -16,7 +18,7 @@ const ENROLL_URL = 'https://www.barbarakohlerseminars.com/challenge-page/0d068d6
         <p class="sub">Break out of old patterns and lay hold of the life God has planned for you &mdash; through practical teaching, Scripture, and Judicial Prayer.</p>
         <div class="hero-ctas">
           <a class="btn btn-gold" href="#classes">Enroll in Level One &mdash; $99</a>
-          <a class="btn btn-outline-light" href="#">Watch Barbara on YouTube</a>
+          <a class="btn btn-outline-light" href={YT}>Watch Barbara on YouTube</a>
         </div>
         <p class="hero-verse">&ldquo;For the word of God is living and active and sharper than any two-edged sword&hellip;&rdquo;<b>Hebrews 4:12, NASB</b></p>
       </div>
@@ -170,8 +172,8 @@ const ENROLL_URL = 'https://www.barbarakohlerseminars.com/challenge-page/0d068d6
             <p>Students know Barbara for her grace-oriented atmosphere &mdash; a place where you can fall forward, learn persistence, and grow in both character and faith.</p>
             <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href="https://www.thekohlergroup.net">The Kohler Group</a>.</p>
             <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
-              <a class="btn btn-sapphire" href="#">YouTube Channel</a>
-              <a class="btn btn-outline-light" style="border-color:var(--sapphire);color:var(--sapphire)" href="#">Follow on Instagram</a>
+              <a class="btn btn-sapphire" href={YT}>YouTube Channel</a>
+              <a class="btn btn-outline-light" style="border-color:var(--sapphire);color:var(--sapphire)" href={FB}>Follow on Facebook</a>
             </div>
           </div>
         </div>
