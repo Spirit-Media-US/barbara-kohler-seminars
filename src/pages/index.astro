@@ -198,12 +198,17 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
             <span class="eyebrow">{h.subscribeEyebrow}</span>
             <h2 id="sub-h">{h.subscribeHeading}</h2>
             <p>{h.subscribeBody}</p>
-            <form class="sub-form" name="ebook-signup" data-ghl-form="ebook" onsubmit="return false;">
-              <input type="text" placeholder="First name" aria-label="First name" />
-              <input type="email" placeholder="Email address" aria-label="Email address" />
+            <form class="sub-form" id="ebook-form" name="ebook-signup">
+              <input id="eb-first" name="firstName" type="text" placeholder="First name" aria-label="First name" autocomplete="given-name" />
+              <input id="eb-email" name="email" type="email" required placeholder="Email address" aria-label="Email address" autocomplete="email" />
               <button class="btn btn-gold" type="submit">Send my eBook</button>
             </form>
-            <p class="fine">{h.subscribeFinePrint}</p>
+            <p class="fine" id="eb-fine">{h.subscribeFinePrint}</p>
+            <div class="eb-success" id="eb-success" hidden>
+              <p class="eb-success-h">Check your inbox — your eBook is on the way.</p>
+              <p>We also emailed you the link. Prefer it now?</p>
+              <a class="btn btn-gold" id="eb-download" href="#" target="_blank" rel="noopener">Download the eBook</a>
+            </div>
           </div>
           <div class="ebook">
             <img src={EBOOK} alt="Free eBook: Break Free of Negative Life Patterns" width="200" height="267" />
@@ -214,6 +219,10 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
   </main>
 
   <style>
+    .eb-success{margin-top:6px}
+    .eb-success-h{font-weight:700;color:var(--navy-ink);font-size:18px;margin-bottom:6px}
+    .eb-error{color:#b3261e;font-weight:600;margin-top:10px}
+    .sub-form button[disabled]{opacity:.6;cursor:progress}
     .seminar-photos{padding:80px 0 0}
     .photo-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
     .photo-row figure{margin:0;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid var(--rule);box-shadow:0 10px 28px rgba(11,36,64,.12)}
@@ -223,4 +232,45 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
       .photo-row{grid-template-columns:1fr;max-width:420px;margin:0 auto;gap:16px}
     }
   </style>
+
+  <script>
+    const ENDPOINT = 'https://bks-ebook-subscribe.spirit-media-publishing.workers.dev';
+    const form = document.getElementById('ebook-form') as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+        const email = (document.getElementById('eb-email') as HTMLInputElement).value.trim();
+        const firstName = (document.getElementById('eb-first') as HTMLInputElement).value.trim();
+        document.querySelectorAll('.eb-error').forEach((n) => n.remove());
+        if (!email) return;
+        btn.disabled = true;
+        const orig = btn.textContent;
+        btn.textContent = 'Sending…';
+        try {
+          const res = await fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, firstName }),
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || 'failed');
+          const dl = document.getElementById('eb-download') as HTMLAnchorElement;
+          if (data.downloadUrl) dl.href = data.downloadUrl;
+          form.hidden = true;
+          const fine = document.getElementById('eb-fine');
+          if (fine) fine.hidden = true;
+          const ok = document.getElementById('eb-success');
+          if (ok) ok.hidden = false;
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = orig;
+          const p = document.createElement('p');
+          p.className = 'eb-error';
+          p.textContent = 'Something went wrong — please try again, or email barbara@barbarakohlerseminars.com.';
+          form.insertAdjacentElement('afterend', p);
+        }
+      });
+    }
+  </script>
 </Layout>
