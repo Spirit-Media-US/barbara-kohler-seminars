@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+const updated = 'July 19, 2026';
+---
+<Layout title="Refund Policy | Barbara Kohler Seminars" description="Refund terms for classes enrolled through barbarakohlerseminars.com.">
+  <main id="top">
+    <section class="legal">
+      <div class="wrap">
+        <span class="eyebrow on-light">Legal</span>
+        <h1>Refund Policy</h1>
+        <p class="updated">Last updated: {updated}</p>
+
+        <p>We want you to be glad you enrolled. Because our classes give you immediate access to digital teaching and downloadable materials, the following terms apply.</p>
+
+        <h2>Requesting a refund</h2>
+        <p>If you are not satisfied, contact us within <strong>14 days</strong> of enrollment at <a href="mailto:barbara@barbarakohlerseminars.com">barbara@barbarakohlerseminars.com</a> and we will review your request. Approved refunds are issued to the original payment method.</p>
+
+        <h2>After 14 days</h2>
+        <p>Because course materials are delivered digitally and immediately, enrollments are generally non-refundable after 14 days.</p>
+
+        <h2>How to reach us</h2>
+        <p>Email <a href="mailto:barbara@barbarakohlerseminars.com">barbara@barbarakohlerseminars.com</a> with your name and the email you used at checkout, and we will help.</p>
+      </div>
+    </section>
+  </main>
+</Layout>
+<style>
+  .legal{padding:64px 0 88px;background:#fff}
+  .legal .wrap{max-width:760px}
+  .legal h1{font-size:34px;color:var(--navy-ink);margin:8px 0 6px}
+  .legal h2{font-size:20px;color:var(--navy-ink);margin:30px 0 10px}
+  .legal p{line-height:1.7;color:#2a2a2a}
+  .updated{color:#6a7686;font-size:14px;margin-bottom:24px}
+  .legal a{color:var(--sapphire);font-weight:600}
+</style>

@@ -200,6 +200,8 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
       .foot-logo img{height:64px;width:auto;margin-bottom:18px}
       .foot-list{list-style:none;display:grid;gap:10px}
       .legal{border-top:1px solid rgba(255,255,255,.12);margin-top:48px;padding-top:24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13.5px;color:#8DA5BD}
+      .legal-links a{color:#8DA5BD;text-decoration:none}
+      .legal-links a:hover{color:var(--gold-bright)}
       @media (max-width:900px){
         .series-grid,.about-grid{grid-template-columns:1fr}
         .steps{grid-template-columns:1fr}
@@ -229,7 +231,7 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
           <a href="/#curriculum">Curriculum</a>
           <a href="/#about">About Barbara</a>
           <a href="/blog">Blog</a>
-          <a href="#contact">Contact</a>
+          <a href="/#contact">Contact</a>
         </nav>
         <div class="nav-actions">
           <div class="social">
@@ -277,6 +279,7 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
         </div>
         <div class="legal">
           <span>&copy; {currentYear} Barbara Kohler Seminars, PLLC. All rights reserved. <HundredClubBadge /></span>
+          <span class="legal-links"><a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/refund-policy">Refunds</a></span>
         </div>
       </div>
     </footer>
