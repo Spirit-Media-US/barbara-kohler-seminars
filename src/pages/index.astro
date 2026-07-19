@@ -19,7 +19,7 @@ const h = await safeFetch<any>(
 
 const courses = await safeFetch<any[]>(
   `*[_type=="course"] | order(order asc){
-    title,level,status,body,price,priceNote,badge,ctaLabel,ctaHref,order,lessons
+    _id,title,level,status,body,price,priceNote,badge,ctaLabel,ctaHref,order,lessons
   }`,
   {},
   [],
@@ -88,7 +88,7 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
             <article class={`course-card${c.status !== 'available' ? ' soon' : ''}`}>
               <div class="course-band">
                 <span class="level">{c.level}</span>
-                <h3>{c.title}</h3>
+                <h3><a href={`/classes/${c._id.replace(/^course-/, '')}`}>{c.title}</a></h3>
               </div>
               <div class="course-body">
                 {(c.body || []).map((para: string) => <p>{para}</p>)}
@@ -105,6 +105,7 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
                       data-product={c.status === 'available' ? 'level-one-from-script-to-scroll' : undefined}
                     >{c.ctaLabel}</a>
                   )}
+                  <a class="course-details" href={`/classes/${c._id.replace(/^course-/, '')}`}>Details &rarr;</a>
                 </div>
               </div>
             </article>
@@ -220,6 +221,10 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
 
   <style>
     #ebook-form[hidden]{display:none}
+    .course-band h3 a{color:inherit;text-decoration:none}
+    .course-band h3 a:hover{text-decoration:underline}
+    .course-details{margin-left:14px;font-weight:700;font-size:14px;color:var(--sapphire);text-decoration:none;white-space:nowrap}
+    .course-details:hover{color:var(--gold)}
     .eb-success{margin-top:6px}
     .eb-success-h{font-weight:700;color:var(--navy-ink);font-size:18px;margin-bottom:6px}
     .eb-error{color:#b3261e;font-weight:600;margin-top:10px}
