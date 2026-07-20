@@ -5,8 +5,8 @@
 		"prodUrl": "https://workonyourself.com",
 		"previewUrl": "https://woy.pages.dev",
 		"mobilePerf": 100,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "B"
 	},
 	{
@@ -16,9 +16,9 @@
 		"previewUrl": "https://thomasmcgovern-cpa.pages.dev",
 		"prodCutOver": false,
 		"prodCutOverNote": "Encirca nameservers — awaiting Kevin's change. Apex currently serves an Encirca parking page, not our build.",
-		"mobilePerf": 98,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 97,
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A"
 	},
 	{
@@ -26,9 +26,9 @@
 		"repo": "Spirit-Media-US/spirit-media-portal",
 		"prodUrl": "https://portal.spiritmediapublishing.com",
 		"previewUrl": "https://spirit-media-portal.pages.dev",
-		"mobilePerf": 99,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 97,
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A"
 	},
 	{
@@ -43,12 +43,12 @@
 		"regressionNote": "INTENTIONAL — not a code regression. Mobile hero video restored at client's wish (~85 median accepted, was 99). Do not fight/strip to chase PSI. See intentionalRegression field. — Kevin 2026-06-19",
 		"intentionalRegression": {
 			"since": "2026-06-19",
-			"reason": "Client wants the mobile hero video; restored via light 240KB encode (commits aedbeaa, f6de71b). LCP is the H1 inside div.hero-video-wrap.",
+			"reason": "Client wants the mobile hero video; restored via light 240KB encode (commits aedbeaa, f6de71b). LCP is the H1 inside div.hero-video-wrap. Chronic 80-91 since mid-June; accepted as-is at floor 80 (Kevin 2026-07-13).",
 			"commits": [
 				"aedbeaa",
 				"f6de71b"
 			],
-			"acceptedMedian": 85,
+			"acceptedMedian": 80,
 			"decidedBy": "Kevin (2026-06-19)"
 		}
 	},
@@ -59,8 +59,8 @@
 		"previewUrl": "https://global-hope-india.pages.dev",
 		"prodCutOver": true,
 		"mobilePerf": 97,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A"
 	},
 	{
@@ -69,8 +69,8 @@
 		"prodUrl": "https://spiritmediapublishing.com",
 		"previewUrl": "https://spirit-media-publishing.pages.dev",
 		"mobilePerf": 96,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A"
 	},
 	{
@@ -78,9 +78,9 @@
 		"repo": "Spirit-Media-US/clowning-from-the-heart",
 		"prodUrl": "https://clowningfromtheheart.com",
 		"previewUrl": "https://clowning-from-the-heart.pages.dev",
-		"mobilePerf": 97,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 96,
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A",
 		"regressionNote": "Dropped from 96 (2026-04-22) to 95 — within noise range, but watch."
 	},
@@ -89,9 +89,9 @@
 		"repo": "Spirit-Media-US/the-kohler-group",
 		"prodUrl": "https://thekohlergroup.net",
 		"previewUrl": "https://the-kohler-group.pages.dev",
-		"mobilePerf": 97,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 98,
+		"mobilePerfType": "median-of-5 2026-07-17",
+		"measuredAt": "2026-07-17",
 		"perfPattern": "A",
 		"regressionNote": "Dropped from 96 (median-of-5 2026-04-22) to 93 (single-shot 2026-04-25) — needs verification with median-of-5.",
 		"intentionalRegression": {
@@ -112,9 +112,9 @@
 		"repo": "Spirit-Media-US/10-billion-travelers",
 		"prodUrl": "https://10btravelers.com",
 		"previewUrl": "https://10-billion-travelers.pages.dev",
-		"mobilePerf": 99,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 100,
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "B",
 		"regressionNote": "Dropped from 97 (2026-04-22) to 94. FROZEN-warning site (uses inlineStylesheets:'always' intentionally — see CLAUDE.md). May be variance."
 	},
@@ -123,9 +123,9 @@
 		"repo": "Spirit-Media-US/kevin-white-us",
 		"prodUrl": "https://kevinwhite.us",
 		"previewUrl": "https://kevin-white-us.pages.dev",
-		"mobilePerf": 98,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 99,
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A",
 		"perfNote": "System-fonts only (no @font-face); video LCP. Mobile 96 (runs 99,96,96,96,96), Desktop 100 (one PSI noise outlier 68 ignored)."
 	},
@@ -135,8 +135,8 @@
 		"prodUrl": "https://johnnywattsagency.com",
 		"previewUrl": "https://john-watts-agency.pages.dev",
 		"mobilePerf": 99,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A"
 	},
 	{
@@ -144,9 +144,9 @@
 		"repo": "Spirit-Media-US/artsbyjustin",
 		"prodUrl": "https://artsbyjustin.com",
 		"previewUrl": "https://artsbyjustin.pages.dev",
-		"mobilePerf": 97,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerf": 98,
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A"
 	},
 	{
@@ -154,10 +154,10 @@
 		"repo": "Spirit-Media-US/sm-gives",
 		"prodUrl": "https://smgives.org",
 		"previewUrl": "https://sm-gives.pages.dev",
-		"measuredAt": "2026-07-11",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A",
-		"mobilePerf": 96,
-		"mobilePerfType": "median-of-5 2026-07-11",
+		"mobilePerf": 99,
+		"mobilePerfType": "median-of-5 2026-07-20",
 		"intentionalRegression": {
 			"since": "2026-06-22",
 			"reason": "Mobile text-only hero (H1 = LCP, commit c3d36c2). Bimodal font-race PSI variance is a consequence of the accepted design, not a regression.",
@@ -171,10 +171,17 @@
 		"prodUrl": "https://fathersheartbible.com",
 		"previewUrl": "https://fathersheartbible.pages.dev",
 		"mobilePerf": 98,
-		"mobilePerfType": "median-of-5 2026-07-11",
-		"measuredAt": "2026-07-11",
+		"mobilePerfType": "median-of-5 2026-07-20",
+		"measuredAt": "2026-07-20",
 		"perfPattern": "A",
-		"perfNote": "Healthy (~99). The June \"First Public Reading\" long hero copy (CLS ~0.29) was REPLACED 2026-07-06 by the short print-launch hero (heroHeadingLine1='Now in Print' + brightened A020 image, index.astro) — the June accepted-regression is resolved, no longer an exception. HISTORIC WARNING: do NOT recalibrate fonts to chase CLS — tried 5/23 & 6/2 and it REGRESSES (PSI Linux substitutes Liberation Sans)."
+		"perfNote": "Healthy (~99). The June \"First Public Reading\" long hero copy (CLS ~0.29) was REPLACED 2026-07-06 by the short print-launch hero (heroHeadingLine1='Now in Print' + brightened A020 image, index.astro) — the June accepted-regression is resolved, no longer an exception. HISTORIC WARNING: do NOT recalibrate fonts to chase CLS — tried 5/23 & 6/2 and it REGRESSES (PSI Linux substitutes Liberation Sans).",
+		"intentionalRegression": {
+			"since": "2026-07-13",
+			"reason": "Bimodal PSI variance on homepage (runs flip 98 vs 83-87 within the same day, predates any commit; blog-only commits were falsely suspected). Chronic PSI accepted as-is.",
+			"acceptedMedian": 87,
+			"decidedBy": "Kevin (2026-07-13)"
+		},
+		"regressionNote": "[auto] median-of-5 = 91 on 2026-07-20 (baseline was 98)"
 	},
 	{
 		"slug": "the-pyramid-principle",
@@ -192,6 +199,6 @@
 			"acceptedMedian": 88,
 			"decidedBy": "Jay (2026-06-02)"
 		},
-		"regressionNote": "[auto] median-of-5 = 87 on 2026-07-11 (baseline was 96)"
+		"regressionNote": "[auto] median-of-5 = 94 on 2026-07-20 (baseline was 96)"
 	}
 ]
