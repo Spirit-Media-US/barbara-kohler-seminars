@@ -2,7 +2,6 @@
 // Barbara Kohler Seminars — site shell (header + footer + brand CSS).
 // Content is Sanity-driven (siteSettings) with hardcoded fallbacks so the
 // build never breaks if Sanity is unreachable or a field is empty.
-import HundredClubBadge from '../components/HundredClubBadge.astro';
 import { safeFetch, urlFor } from '../lib/sanity';
 
 interface Props {
@@ -278,7 +277,7 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
           </div>
         </div>
         <div class="legal">
-          <span>&copy; {currentYear} Barbara Kohler Seminars, PLLC. All rights reserved. <HundredClubBadge /></span>
+          <span>&copy; {currentYear} Barbara Kohler Seminars, PLLC. All rights reserved. &middot; Powered by Spirit Media Publishing.</span>
           <span class="legal-links"><a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/refund-policy">Refunds</a></span>
         </div>
       </div>
