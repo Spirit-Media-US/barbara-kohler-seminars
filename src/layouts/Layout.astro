@@ -20,6 +20,7 @@ const FALLBACK = {
   address: 'Daetwyler Plaza Building\n13420 Reese Blvd W\nHuntersville, NC 28078',
   youtube: 'https://www.youtube.com/@barbarakohlerseminarspllc1709',
   facebook: 'https://www.facebook.com/BarbaraKohlerSeminars/',
+  x: 'https://x.com/barbarajkohler',
   kohlerGroupUrl: 'https://www.thekohlergroup.net',
   footerBlurb: 'Personal growth seminars from a Biblical worldview — helping people overcome obstacles and step into the life God has planned for them.',
   logo: null as any,
@@ -27,7 +28,7 @@ const FALLBACK = {
 };
 
 const settings = await safeFetch(
-  `*[_type=="siteSettings"][0]{siteName,tagline,topBar,phone,barbaraEmail,address,youtube,facebook,kohlerGroupUrl,footerBlurb,logo,ogImage}`,
+  `*[_type=="siteSettings"][0]{siteName,tagline,topBar,phone,barbaraEmail,address,youtube,facebook,x,kohlerGroupUrl,footerBlurb,logo,ogImage}`,
   {},
   FALLBACK,
 );
@@ -36,6 +37,7 @@ const S = { ...FALLBACK, ...(settings || {}) };
 const LOGO = S.logo ? urlFor(S.logo).height(120).url() : `${R2}/logo-tight.png`;
 const YT = S.youtube || FALLBACK.youtube;
 const FB = S.facebook || FALLBACK.facebook;
+const X = S.x || FALLBACK.x;
 const EMAIL = S.barbaraEmail || FALLBACK.barbaraEmail;
 const PHONE = S.phone || FALLBACK.phone;
 const TEL = 'tel:+1' + PHONE.replace(/[^0-9]/g, '');
@@ -240,6 +242,9 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
             <a href={FB} target="_blank" rel="noopener noreferrer" aria-label="Barbara Kohler Seminars on Facebook" title="Facebook">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4H7.1V12h3V9.4c0-3 1.8-4.6 4.5-4.6 1.3 0 2.7.2 2.7.2v2.9h-1.5c-1.5 0-2 .9-2 1.9V12h3.3l-.5 3.5h-2.8v8.4A12 12 0 0 0 24 12z"/></svg>
             </a>
+            <a href={X} target="_blank" rel="noopener noreferrer" aria-label="Barbara Kohler Seminars on X" title="X">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.6l-5.2-6.8L5.7 22H2.4l7.7-8.8L1 2h6.8l4.7 6.2L18.9 2zm-1.2 18h1.8L7.4 3.9H5.5L17.7 20z"/></svg>
+            </a>
           </div>
           <button class="cart-btn" aria-label="View cart">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 14h9.9c.9 0 1.7-.6 1.9-1.5l2-8A1 1 0 0 0 20 3H5.2l-.4-2H1v2h2.2l2.5 11.2A2 2 0 0 0 7.2 14z"/></svg>
@@ -271,6 +276,7 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
             <ul class="foot-list">
               <li><a href={YT} target="_blank" rel="noopener noreferrer">YouTube</a></li>
               <li><a href={FB} target="_blank" rel="noopener noreferrer">Facebook</a></li>
+              <li><a href={X} target="_blank" rel="noopener noreferrer">X</a></li>
               <li><a href="/blog">Blog</a></li>
               <li><a href={S.kohlerGroupUrl} target="_blank" rel="noopener noreferrer">The Kohler Group, PLLC</a></li>
             </ul>

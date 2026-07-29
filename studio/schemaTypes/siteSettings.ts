@@ -18,6 +18,7 @@ export default defineType({
 		defineField({ name: 'address', title: 'Address', type: 'text', rows: 3 }),
 		defineField({ name: 'youtube', title: 'YouTube URL', type: 'url' }),
 		defineField({ name: 'facebook', title: 'Facebook URL', type: 'url' }),
+		defineField({ name: 'x', title: 'X (Twitter) URL', type: 'url' }),
 		defineField({
 			name: 'kohlerGroupUrl',
 			title: 'The Kohler Group URL',
