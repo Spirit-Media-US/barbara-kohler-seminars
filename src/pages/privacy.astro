@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+const updated = 'July 19, 2026';
+---
+<Layout title="Privacy Policy | Barbara Kohler Seminars" description="How Barbara Kohler Seminars, PLLC collects, uses, and protects your information.">
+  <main id="top">
+    <section class="legal">
+      <div class="wrap">
+        <span class="eyebrow on-light">Legal</span>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: {updated}</p>
+
+        <p>Barbara Kohler Seminars, PLLC (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) respects your privacy. This policy explains what information we collect through <strong>barbarakohlerseminars.com</strong>, how we use it, and the choices you have.</p>
+
+        <h2>Information we collect</h2>
+        <ul>
+          <li><strong>Information you provide:</strong> your name and email address when you subscribe to our mailing list or request our free eBook, and the billing details you enter at checkout when you enroll in a class.</li>
+          <li><strong>Payment information:</strong> class payments are processed securely by <strong>Stripe</strong>. We do not store your full card number on our servers.</li>
+          <li><strong>Usage information:</strong> standard analytics such as pages visited and device/browser type, used to improve the site.</li>
+        </ul>
+
+        <h2>How we use your information</h2>
+        <ul>
+          <li>To deliver the free eBook and the classes you enroll in.</li>
+          <li>To send teaching, encouragement, and announcements about new classes (you can unsubscribe at any time).</li>
+          <li>To operate, secure, and improve the website.</li>
+        </ul>
+
+        <h2>Sharing</h2>
+        <p>We do not sell your personal information. We share it only with service providers who help us operate &mdash; for example, our payment processor (Stripe), email/CRM platform, and hosting/analytics providers &mdash; and only as needed to provide these services, or where required by law.</p>
+
+        <h2>Email choices</h2>
+        <p>Every marketing email includes an unsubscribe link. Clicking it stops further marketing emails to you. You may also contact us at the address below to update or remove your information.</p>
+
+        <h2>Data retention & security</h2>
+        <p>We keep your information for as long as needed to provide our services and meet legal obligations, and we use reasonable safeguards to protect it. No method of transmission over the internet is 100% secure.</p>
+
+        <h2>Children</h2>
+        <p>Our site and classes are intended for adults and are not directed to children under 13.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about this policy? Email <a href="mailto:barbara@barbarakohlerseminars.com">barbara@barbarakohlerseminars.com</a> or write to Barbara Kohler Seminars, PLLC, Daetwyler Plaza Building, 13420 Reese Blvd W, Huntersville, NC 28078.</p>
+      </div>
+    </section>
+  </main>
+</Layout>
+<style>
+  .legal{padding:64px 0 88px;background:#fff}
+  .legal .wrap{max-width:760px}
+  .legal h1{font-size:34px;color:var(--navy-ink);margin:8px 0 6px}
+  .legal h2{font-size:20px;color:var(--navy-ink);margin:30px 0 10px}
+  .legal p,.legal li{line-height:1.7;color:#2a2a2a}
+  .legal ul{padding-left:22px}
+  .legal li{margin-bottom:8px}
+  .updated{color:#6a7686;font-size:14px;margin-bottom:24px}
+  .legal a{color:var(--sapphire);font-weight:600}
+</style>

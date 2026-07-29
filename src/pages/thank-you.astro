@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { safeFetch } from '../lib/sanity';
+
+const settings = await safeFetch<any>(
+  `*[_type=="siteSettings"][0]{barbaraEmail,youtube}`,
+  {},
+  {},
+);
+const EMAIL = settings?.barbaraEmail || 'barbara@barbarakohlerseminars.com';
+const YT = settings?.youtube || 'https://www.youtube.com/@barbarakohlerseminarspllc1709';
+---
+<Layout title="You're Enrolled | Barbara Kohler Seminars" description="Thank you for enrolling in Level One — From Script to Scroll.">
+  <Fragment slot="head"><meta name="robots" content="noindex, nofollow" /></Fragment>
+  <main id="top">
+    <section class="hero" aria-labelledby="ty-h">
+      <div class="wrap">
+        <span class="eyebrow">Welcome to Level One</span>
+        <h1 id="ty-h">You&rsquo;re enrolled &mdash; thank you!</h1>
+        <p class="hero-verse">Your payment for <b style="display:inline">From Script to Scroll</b> is confirmed.</p>
+        <div class="scroll-rule center"><span></span></div>
+      </div>
+    </section>
+
+    <section class="ty-body">
+      <div class="wrap">
+        <h2>What happens next</h2>
+        <ol class="ty-steps">
+          <li><strong>Check your email.</strong> Your receipt and course-access details are on their way to the address you used at checkout. If you don&rsquo;t see it within a few minutes, please check your spam or promotions folder.</li>
+          <li><strong>Save the sender.</strong> Add <a href={`mailto:${EMAIL}`}>{EMAIL}</a> to your contacts so future lessons and updates land in your inbox.</li>
+          <li><strong>Questions?</strong> Reply to your receipt email or reach Barbara directly at <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</li>
+        </ol>
+
+        <div class="ty-ctas">
+          <a class="btn btn-sapphire" href="/">Back to home</a>
+          <a class="btn btn-outline-sapphire" href={YT}>Watch Barbara on YouTube</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .ty-body{padding:64px 0 88px;background:#fff}
+  .ty-body h2{font-size:26px;color:var(--navy-ink);margin:0 0 22px}
+  .ty-steps{max-width:720px;margin:0;padding-left:22px;line-height:1.7;color:#2a2a2a}
+  .ty-steps li{margin-bottom:16px}
+  .ty-steps a{color:var(--sapphire);font-weight:600}
+  .ty-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
+</style>

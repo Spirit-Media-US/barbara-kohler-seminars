@@ -1,61 +1,284 @@
 ---
-// SMP Site Index — 100 Club hero scaffold.
-// See /home/deploy/claude-config/rules/performance-gate.md for the trait list.
-// Keep this hero pattern intact when wiring real Sanity content:
-//   * srcset (mobile <=800w + desktop), fm=webp&q=80
-//   * Fragment slot=head preload with fetchpriority high
-//   * explicit width / height on the img tag
-//   * no animation hooks on the first hero region
 import Layout from '../layouts/Layout.astro';
-import '../styles/global.css';
-// import { sanityClient, urlFor } from '../lib/sanity.ts';
+import { safeFetch, urlFor } from '../lib/sanity';
 
-// const hero = await sanityClient.fetch(`*[_type == "homepage"][0].heroImage`);
-// const heroMobile  = urlFor(hero).width(640).format('webp').quality(80).url();
-// const heroDesktop = urlFor(hero).width(1200).format('webp').quality(80).url();
-const heroMobile  = '/hero-placeholder-640.webp';
-const heroDesktop = '/hero-placeholder-1200.webp';
+const R2 = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars';
+
+const h = await safeFetch<any>(
+  `*[_type=="homePage"][0]{
+    heroEyebrow,heroHeading,heroSub,heroVerse,heroVerseRef,
+    seriesEyebrow,seriesHeading,seriesLede,seriesBody,seriesPoints,
+    classesEyebrow,classesHeading,classesLede,seminarPhotos,curriculumEyebrow,curriculumHeading,
+    verseBandQuote,verseBandRef,howEyebrow,howHeading,steps,
+    aboutEyebrow,aboutName,aboutCreds,aboutParagraphs,headshot,
+    subscribeEyebrow,subscribeHeading,subscribeBody,subscribeFinePrint,ebookCover
+  }`,
+  {},
+  {},
+);
+
+const courses = await safeFetch<any[]>(
+  `*[_type=="course" && hidden != true] | order(order asc){
+    _id,title,level,status,body,price,priceNote,badge,ctaLabel,ctaHref,order,lessons
+  }`,
+  {},
+  [],
+);
+
+const settings = await safeFetch<any>(`*[_type=="siteSettings"][0]{kohlerGroupUrl,youtube,facebook}`, {}, {});
+const YT = settings?.youtube || 'https://www.youtube.com/@barbarakohlerseminarspllc1709';
+const FB = settings?.facebook || 'https://www.facebook.com/BarbaraKohlerSeminars/';
+const KG = settings?.kohlerGroupUrl || 'https://www.thekohlergroup.net';
+
+const primary = courses.find((c) => c.status === 'available') || courses[0] || {};
+const lessons = primary.lessons || [];
+const HEADSHOT = h.headshot ? urlFor(h.headshot).width(680).url() : `${R2}/barbara-kohler.jpg`;
+const EBOOK = h.ebookCover ? urlFor(h.ebookCover).width(400).url() : `${R2}/ebook-cover.png`;
+const heroCtaLabel = `Enroll in Level One${primary.price ? ` — ${primary.price}` : ''}`;
+const seminarPhotos = h.seminarPhotos || [];
+const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto('format').url();
 ---
-
-<Layout title="Site Name — Tagline">
-  <Fragment slot="head">
-    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
-    <link
-      rel="preload"
-      as="image"
-      href={heroDesktop}
-      imagesrcset={`${heroMobile} 640w, ${heroDesktop} 1200w`}
-      imagesizes="(max-width: 640px) 640px, 1200px"
-      fetchpriority="high"
-    />
-  </Fragment>
-
-  <main>
-    <!-- HERO — first section: NO data-aos, NO reveal wrapper, NO transform-on-mount (Trait 7) -->
-    <section class="hero-section" style="padding: 48px 24px;">
-      <div class="container-site" style="display: grid; gap: 24px; max-width: 1200px; margin: 0 auto;">
-        <img
-          src={heroDesktop}
-          srcset={`${heroMobile} 640w, ${heroDesktop} 1200w`}
-          sizes="(max-width: 640px) 640px, 1200px"
-          width="1200"
-          height="675"
-          alt="Replace with descriptive alt text for the hero image"
-          fetchpriority="high"
-          loading="eager"
-          decoding="async"
-          style="width: 100%; height: auto; max-width: 1200px;"
-        />
-        <h1 style="font-size: clamp(32px, 5vw, 56px); line-height: 1.15; margin: 0;">
-          Site Name
-        </h1>
-        <p style="font-size: 18px; max-width: 65ch; margin: 0;">
-          Replace this scaffold with the real homepage hero. Keep the srcset / preload / width-height /
-          fetchpriority pattern intact — that combination is what hits 100 Club mobile out of the gate.
-        </p>
+<Layout>
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-h">
+      <div class="wrap">
+        <span class="eyebrow">{h.heroEyebrow}</span>
+        <h1 id="hero-h">{h.heroHeading}</h1>
+        <p class="sub">{h.heroSub}</p>
+        <div class="hero-ctas">
+          <a class="btn btn-gold" href="#classes">{heroCtaLabel}</a>
+          <a class="btn btn-outline-light" href={YT} target="_blank" rel="noopener noreferrer">Watch Barbara on YouTube</a>
+        </div>
+        {h.heroVerse && (
+          <p class="hero-verse">{h.heroVerse}<b>{h.heroVerseRef}</b></p>
+        )}
       </div>
     </section>
 
-    <!-- Below-fold regions may use reveal-on-scroll wrappers. Keep animation hooks OFF the hero. -->
+    <section aria-labelledby="series-h">
+      <div class="wrap">
+        <div class="series-grid">
+          <div>
+            <span class="eyebrow on-light">{h.seriesEyebrow}</span>
+            <h2 id="series-h">{h.seriesHeading}</h2>
+            <div class="scroll-rule"><span></span></div>
+            <p class="lede">{h.seriesLede}</p>
+            {h.seriesBody && <p style="margin-top:18px;color:var(--ink-soft)">{h.seriesBody}</p>}
+          </div>
+          <ul class="series-points" aria-label="What you will learn">
+            {(h.seriesPoints || []).map((p: any) => (
+              <li><strong>{p.lead}</strong> {p.text}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="classes" class="soft" aria-labelledby="classes-h">
+      <div class="wrap">
+        <div class="section-head center">
+          <span class="eyebrow on-light">{h.classesEyebrow}</span>
+          <h2 id="classes-h">{h.classesHeading}</h2>
+          <div class="scroll-rule center"><span></span></div>
+          <p class="lede">{h.classesLede}</p>
+        </div>
+
+        <div class="courses">
+          {courses.map((c: any) => (
+            <article class={`course-card${c.status !== 'available' ? ' soon' : ''}`}>
+              <div class="course-band">
+                <span class="level">{c.level}</span>
+                <h3><a href={`/classes/${c._id.replace(/^course-/, '')}`}>{c.title}</a></h3>
+              </div>
+              <div class="course-body">
+                {(c.body || []).map((para: string) => <p>{para}</p>)}
+                <div class="course-meta">
+                  {c.status === 'available' && c.price ? (
+                    <span class="price">{c.price} <small>{c.priceNote}</small></span>
+                  ) : (
+                    c.badge && <span class="badge-soon">{c.badge}</span>
+                  )}
+                  {c.ctaLabel && (
+                    <a
+                      class={`btn ${c.status === 'available' ? 'btn-sapphire' : 'btn-outline-sapphire'}`}
+                      href={c.ctaHref || '#subscribe'}
+                      data-product={c.status === 'available' ? 'level-one-from-script-to-scroll' : undefined}
+                    >{c.ctaLabel}</a>
+                  )}
+                  <a class="course-details" href={`/classes/${c._id.replace(/^course-/, '')}`}>Details &rarr;</a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {seminarPhotos.length > 0 && (
+      <section class="seminar-photos" aria-label="Barbara teaching in seminars">
+        <div class="wrap">
+          <div class="photo-row">
+            {seminarPhotos.map((p: any) => (
+              <figure><img src={photoUrl(p)} alt={p.alt || ''} width="800" height="1067" loading="lazy" /></figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {lessons.length > 0 && (
+      <section id="curriculum" aria-labelledby="curr-h">
+        <div class="wrap">
+          <div class="section-head">
+            <span class="eyebrow on-light">{h.curriculumEyebrow}</span>
+            <h2 id="curr-h">{h.curriculumHeading}</h2>
+            <div class="scroll-rule"><span></span></div>
+          </div>
+          <div class="lessons">
+            {lessons.map((l: any) => (
+              <div class="lesson">
+                <div class="lesson-no">{l.number}</div>
+                <div><h3>{l.title}</h3><p>{l.description}</p></div>
+              </div>
+            ))}
+          </div>
+          <div style="text-align:center;margin-top:44px">
+            <a class="btn btn-gold" href="#classes">{heroCtaLabel}</a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {h.verseBandQuote && (
+      <div class="verse-band" role="complementary" aria-label="Scripture">
+        <blockquote>{h.verseBandQuote}</blockquote>
+        <cite>{h.verseBandRef}</cite>
+      </div>
+    )}
+
+    <section class="soft" aria-labelledby="how-h">
+      <div class="wrap">
+        <div class="section-head center">
+          <span class="eyebrow on-light">{h.howEyebrow}</span>
+          <h2 id="how-h">{h.howHeading}</h2>
+          <div class="scroll-rule center"><span></span></div>
+        </div>
+        <div class="steps">
+          {(h.steps || []).map((s: any) => (
+            <div class="step"><span class="k">{s.label}</span><h3>{s.title}</h3><p>{s.body}</p></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="about" aria-labelledby="about-h">
+      <div class="wrap">
+        <div class="about-grid">
+          <div class="about-photo">
+            <img src={HEADSHOT} alt={`${h.aboutName || 'Barbara Kohler'}, ${h.aboutCreds || ''}`} width="340" height="453" />
+          </div>
+          <div>
+            <span class="eyebrow on-light">{h.aboutEyebrow}</span>
+            <h2 id="about-h">{h.aboutName}</h2>
+            <p class="creds">{h.aboutCreds}</p>
+            {(h.aboutParagraphs || []).map((para: string) => <p>{para}</p>)}
+            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href={KG} target="_blank" rel="noopener noreferrer">The Kohler Group</a>.</p>
+            <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
+              <a class="btn btn-sapphire" href={YT} target="_blank" rel="noopener noreferrer">YouTube Channel</a>
+              <a class="btn btn-outline-sapphire" href={FB} target="_blank" rel="noopener noreferrer">Follow on Facebook</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="subscribe" class="soft" aria-labelledby="sub-h" style="padding-top:0">
+      <div class="wrap">
+        <div class="subscribe">
+          <div>
+            <span class="eyebrow">{h.subscribeEyebrow}</span>
+            <h2 id="sub-h">{h.subscribeHeading}</h2>
+            <p>{h.subscribeBody}</p>
+            <form class="sub-form" id="ebook-form" name="ebook-signup">
+              <input id="eb-first" name="firstName" type="text" required placeholder="First name" aria-label="First name" autocomplete="given-name" />
+              <input id="eb-last" name="lastName" type="text" required placeholder="Last name" aria-label="Last name" autocomplete="family-name" />
+              <input id="eb-email" name="email" type="email" required placeholder="Email address" aria-label="Email address" autocomplete="email" />
+              <button class="btn btn-gold" type="submit">Send my eBook</button>
+            </form>
+            <p class="fine" id="eb-fine">{h.subscribeFinePrint}</p>
+            <div class="eb-success" id="eb-success" hidden>
+              <p class="eb-success-h">Check your inbox — your eBook is on the way.</p>
+              <p>We also emailed you the link. Prefer it now?</p>
+              <a class="btn btn-gold" id="eb-download" href="#" target="_blank" rel="noopener">Download the eBook</a>
+            </div>
+          </div>
+          <div class="ebook">
+            <img src={EBOOK} alt="Free eBook: Break Free of Negative Life Patterns" width="200" height="267" />
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <style>
+    #ebook-form[hidden]{display:none}
+    .course-band h3 a{color:inherit;text-decoration:none}
+    .course-band h3 a:hover{text-decoration:underline}
+    .course-details{margin-left:14px;font-weight:700;font-size:14px;color:var(--sapphire);text-decoration:none;white-space:nowrap}
+    .course-details:hover{color:var(--gold)}
+    .eb-success{margin-top:6px}
+    .eb-success-h{font-weight:700;color:var(--navy-ink);font-size:18px;margin-bottom:6px}
+    .eb-error{color:#b3261e;font-weight:600;margin-top:10px}
+    .sub-form button[disabled]{opacity:.6;cursor:progress}
+    .seminar-photos{padding:80px 0 0}
+    .photo-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .photo-row figure{margin:0;aspect-ratio:3/4;border-radius:10px;overflow:hidden;border:1px solid var(--rule);box-shadow:0 10px 28px rgba(11,36,64,.12)}
+    .photo-row img{width:100%;height:100%;object-fit:cover;display:block}
+    @media (max-width:700px){
+      .seminar-photos{padding-top:56px}
+      .photo-row{grid-template-columns:1fr;max-width:420px;margin:0 auto;gap:16px}
+    }
+  </style>
+
+  <script>
+    const ENDPOINT = 'https://bks-ebook-subscribe.spirit-media-publishing.workers.dev';
+    const form = document.getElementById('ebook-form') as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+        const email = (document.getElementById('eb-email') as HTMLInputElement).value.trim();
+        const firstName = (document.getElementById('eb-first') as HTMLInputElement).value.trim();
+        const lastName = (document.getElementById('eb-last') as HTMLInputElement).value.trim();
+        document.querySelectorAll('.eb-error').forEach((n) => n.remove());
+        if (!email || !firstName || !lastName) return;
+        btn.disabled = true;
+        const orig = btn.textContent;
+        btn.textContent = 'Sending…';
+        try {
+          const res = await fetch(ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, firstName, lastName }),
+          });
+          const data = await res.json();
+          if (!res.ok || !data.ok) throw new Error(data.error || 'failed');
+          const dl = document.getElementById('eb-download') as HTMLAnchorElement;
+          if (data.downloadUrl) dl.href = data.downloadUrl;
+          form.hidden = true;
+          const fine = document.getElementById('eb-fine');
+          if (fine) fine.hidden = true;
+          const ok = document.getElementById('eb-success');
+          if (ok) ok.hidden = false;
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = orig;
+          const p = document.createElement('p');
+          p.className = 'eb-error';
+          p.textContent = 'Something went wrong — please try again, or email barbara@barbarakohlerseminars.com.';
+          form.insertAdjacentElement('afterend', p);
+        }
+      });
+    }
+  </script>
 </Layout>

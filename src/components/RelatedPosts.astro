@@ -1,0 +1,55 @@
+---
+import { sanityClient, urlFor } from '../lib/sanity';
+
+interface Props {
+  currentSlug: string;
+  currentTags?: string[];
+}
+const { currentSlug, currentTags = [] } = Astro.props;
+
+const all = await sanityClient.fetch(
+  `*[_type=="blogPost" && defined(slug.current) && slug.current != $slug] | order(publishDate desc){
+    title,"slug":slug.current,excerpt,tags,publishDate,heroImage
+  }`,
+  { slug: currentSlug },
+);
+
+// Prefer posts sharing a tag; fill with most-recent otherwise.
+const scored = (all || [])
+  .map((p: any) => ({ p, shared: (p.tags || []).filter((t: string) => currentTags.includes(t)).length }))
+  .sort((a: any, b: any) => b.shared - a.shared);
+const related = scored.slice(0, 3).map((s: any) => s.p);
+
+const img = (p: any) =>
+  p.heroImage ? urlFor(p.heroImage).width(600).height(360).format('webp').url() : null;
+---
+{related.length > 0 && (
+  <section class="related">
+    <div class="wrap">
+      <h2 class="related-h">More from the blog</h2>
+      <div class="related-grid">
+        {related.map((p: any) => (
+          <a class="related-card" href={`/blog/${p.slug}`}>
+            {img(p) && <div class="related-img"><img src={img(p)} alt={p.title} width="600" height="360" loading="lazy" /></div>}
+            <div class="related-body">
+              <h3>{p.title}</h3>
+              {p.excerpt && <p>{p.excerpt}</p>}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+<style>
+  .related{background:var(--paper-soft);padding:64px 0}
+  .related-h{text-align:center;font-size:26px;color:var(--navy-ink);margin-bottom:36px}
+  .related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+  .related-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--rule);border-radius:8px;overflow:hidden;text-decoration:none;transition:box-shadow .15s,transform .15s}
+  .related-card:hover{box-shadow:0 10px 26px rgba(11,36,64,.12);transform:translateY(-2px)}
+  .related-img{aspect-ratio:5/3;overflow:hidden}
+  .related-img img{width:100%;height:100%;object-fit:cover;display:block}
+  .related-body{padding:20px 22px 24px}
+  .related-body h3{font-size:18px;color:var(--navy-ink);line-height:1.25;margin-bottom:8px}
+  .related-body p{font-size:14.5px;color:var(--ink-soft);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+</style>
