@@ -4,7 +4,7 @@ import { safeFetch } from '../../lib/sanity';
 
 export async function getStaticPaths() {
   const courses = await safeFetch(
-    `*[_type=="course"] | order(order asc){
+    `*[_type=="course" && hidden != true] | order(order asc){
       _id, title, level, status, body, price, priceNote, badge, ctaLabel, ctaHref, lessons
     }`,
     {},

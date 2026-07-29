@@ -18,7 +18,7 @@ const h = await safeFetch<any>(
 );
 
 const courses = await safeFetch<any[]>(
-  `*[_type=="course"] | order(order asc){
+  `*[_type=="course" && hidden != true] | order(order asc){
     _id,title,level,status,body,price,priceNote,badge,ctaLabel,ctaHref,order,lessons
   }`,
   {},
@@ -47,7 +47,7 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
         <p class="sub">{h.heroSub}</p>
         <div class="hero-ctas">
           <a class="btn btn-gold" href="#classes">{heroCtaLabel}</a>
-          <a class="btn btn-outline-light" href={YT}>Watch Barbara on YouTube</a>
+          <a class="btn btn-outline-light" href={YT} target="_blank" rel="noopener noreferrer">Watch Barbara on YouTube</a>
         </div>
         {h.heroVerse && (
           <p class="hero-verse">{h.heroVerse}<b>{h.heroVerseRef}</b></p>
@@ -182,10 +182,10 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
             <h2 id="about-h">{h.aboutName}</h2>
             <p class="creds">{h.aboutCreds}</p>
             {(h.aboutParagraphs || []).map((para: string) => <p>{para}</p>)}
-            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href={KG}>The Kohler Group</a>.</p>
+            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href={KG} target="_blank" rel="noopener noreferrer">The Kohler Group</a>.</p>
             <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
-              <a class="btn btn-sapphire" href={YT}>YouTube Channel</a>
-              <a class="btn btn-outline-sapphire" href={FB}>Follow on Facebook</a>
+              <a class="btn btn-sapphire" href={YT} target="_blank" rel="noopener noreferrer">YouTube Channel</a>
+              <a class="btn btn-outline-sapphire" href={FB} target="_blank" rel="noopener noreferrer">Follow on Facebook</a>
             </div>
           </div>
         </div>
@@ -200,7 +200,8 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
             <h2 id="sub-h">{h.subscribeHeading}</h2>
             <p>{h.subscribeBody}</p>
             <form class="sub-form" id="ebook-form" name="ebook-signup">
-              <input id="eb-first" name="firstName" type="text" placeholder="First name" aria-label="First name" autocomplete="given-name" />
+              <input id="eb-first" name="firstName" type="text" required placeholder="First name" aria-label="First name" autocomplete="given-name" />
+              <input id="eb-last" name="lastName" type="text" required placeholder="Last name" aria-label="Last name" autocomplete="family-name" />
               <input id="eb-email" name="email" type="email" required placeholder="Email address" aria-label="Email address" autocomplete="email" />
               <button class="btn btn-gold" type="submit">Send my eBook</button>
             </form>
@@ -248,8 +249,9 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
         const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
         const email = (document.getElementById('eb-email') as HTMLInputElement).value.trim();
         const firstName = (document.getElementById('eb-first') as HTMLInputElement).value.trim();
+        const lastName = (document.getElementById('eb-last') as HTMLInputElement).value.trim();
         document.querySelectorAll('.eb-error').forEach((n) => n.remove());
-        if (!email) return;
+        if (!email || !firstName || !lastName) return;
         btn.disabled = true;
         const orig = btn.textContent;
         btn.textContent = 'Sending…';
@@ -257,7 +259,7 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
           const res = await fetch(ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, firstName }),
+            body: JSON.stringify({ email, firstName, lastName }),
           });
           const data = await res.json();
           if (!res.ok || !data.ok) throw new Error(data.error || 'failed');

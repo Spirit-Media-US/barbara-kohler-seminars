@@ -44,6 +44,7 @@ export default defineType({
 		defineField({ name: 'ctaLabel', title: 'CTA Label', type: 'string', description: 'e.g. "Enroll now" / "Notify me"' }),
 		defineField({ name: 'ctaHref', title: 'CTA Link', type: 'string', description: 'URL or on-page anchor like #subscribe' }),
 		defineField({ name: 'order', title: 'Display Order', type: 'number' }),
+		defineField({ name: 'hidden', title: 'Hidden', type: 'boolean', description: 'Hide this card from the site without deleting it.', initialValue: false }),
 		defineField({
 			name: 'lessons',
 			title: 'Lessons (Curriculum)',
