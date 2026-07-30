@@ -22,6 +22,7 @@ const lessons = c.lessons || [];
 // anchor links like "#subscribe" must be absolute from a sub-page
 const ctaHref = c.ctaHref && c.ctaHref.startsWith('#') ? `/${c.ctaHref}` : c.ctaHref;
 const isEnroll = c.status === 'available';
+const ctaExternal = ctaHref && /^https?:\/\//.test(ctaHref);
 ---
 <Layout
   title={`${c.title} | Barbara Kohler Seminars`}
@@ -38,7 +39,7 @@ const isEnroll = c.status === 'available';
         {c.badge && !c.price && <p class="badge">{c.badge}</p>}
         {ctaHref && (
           <div class="hero-ctas">
-            <a class={`btn ${isEnroll ? 'btn-gold' : 'btn-outline-light'}`} href={ctaHref}>{c.ctaLabel}</a>
+            <a class={`btn ${isEnroll ? 'btn-gold' : 'btn-outline-light'}`} href={ctaHref} {...(ctaExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{c.ctaLabel}</a>
             <a class="btn btn-outline-light" href="/#classes">All classes</a>
           </div>
         )}
@@ -67,7 +68,7 @@ const isEnroll = c.status === 'available';
 
         {isEnroll && ctaHref && (
           <div class="course-cta">
-            <a class="btn btn-gold" href={ctaHref}>{c.ctaLabel} — {c.price}</a>
+            <a class="btn btn-gold" href={ctaHref} {...(ctaExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{c.ctaLabel} — {c.price}</a>
           </div>
         )}
       </div>
