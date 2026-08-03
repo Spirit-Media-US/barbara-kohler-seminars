@@ -21,6 +21,7 @@ export default defineType({
 					{ title: 'Privacy Policy (/privacy)', value: 'privacy' },
 					{ title: 'Terms of Service (/terms)', value: 'terms' },
 					{ title: 'Refund Policy (/refund-policy)', value: 'refund-policy' },
+					{ title: 'Blog index header (/blog)', value: 'blog' },
 					{ title: 'Thank You (after checkout)', value: 'thank-you' },
 					{ title: 'Page Not Found (404)', value: 'not-found' },
 				],
@@ -31,6 +32,49 @@ export default defineType({
 			name: 'lastUpdated',
 			title: 'Last Updated (shown on legal pages)',
 			type: 'date',
+		}),
+		// Used by the Thank-You page, which has a hero band and two buttons
+		// rather than a plain legal-page layout. Ignored by the legal pages.
+		defineField({
+			name: 'heroEyebrow',
+			title: 'Hero eyebrow (Thank-You page)',
+			type: 'string',
+			description: 'Small label above the headline, e.g. "Welcome to Level One".',
+		}),
+		defineField({
+			name: 'heroHeading',
+			title: 'Hero headline (Thank-You page)',
+			type: 'string',
+		}),
+		defineField({
+			name: 'heroSubline',
+			title: 'Hero subline (Thank-You page)',
+			type: 'string',
+		}),
+		defineField({
+			name: 'ctaPrimaryLabel',
+			title: 'Primary button label (Thank-You page)',
+			type: 'string',
+			description: 'Default: "Back to home"',
+		}),
+		defineField({
+			name: 'ctaSecondaryLabel',
+			title: 'Secondary button label (Thank-You page)',
+			type: 'string',
+			description: 'Default: "Watch Barbara on YouTube"',
+		}),
+		defineField({
+			name: 'seoTitle',
+			title: 'Browser / search title',
+			type: 'string',
+			description: 'Shown in the browser tab and in search results. Leave blank to use the Title above.',
+		}),
+		defineField({
+			name: 'seoDescription',
+			title: 'Search description',
+			type: 'text',
+			rows: 2,
+			description: 'The one- or two-sentence summary search engines show under the title.',
 		}),
 		defineField({
 			name: 'body',

@@ -14,6 +14,8 @@ const R2 = 'https://assets.spiritmediapublishing.com/barbara-kohler-seminars';
 const FALLBACK = {
   siteName: 'Barbara Kohler Seminars',
   tagline: 'Online Classes to Change Your Life',
+  metaDescription:
+    'Faith-based online classes from a Biblical worldview. Learn Judicial Prayer and break out of old patterns. From Barbara Kohler, MS, CRC, LCMHC (NC), LPC (SC), NCC.',
   topBar: 'Questions about a class or hosting a live seminar? Call',
   phone: '(252) 214-5107',
   barbaraEmail: 'barbara@barbarakohlerseminars.com',
@@ -28,7 +30,7 @@ const FALLBACK = {
 };
 
 const settings = await safeFetch(
-  `*[_type=="siteSettings"][0]{siteName,tagline,topBar,phone,barbaraEmail,address,youtube,facebook,x,kohlerGroupUrl,footerBlurb,logo,ogImage}`,
+  `*[_type=="siteSettings"][0]{siteName,tagline,metaDescription,topBar,phone,barbaraEmail,address,youtube,facebook,x,kohlerGroupUrl,footerBlurb,logo,ogImage}`,
   {},
   FALLBACK,
 );
@@ -46,9 +48,12 @@ const ogFallback = S.ogImage ? urlFor(S.ogImage).width(1200).url() : `${R2}/logo
 
 const {
   title = `${S.siteName} | ${S.tagline}`,
-  description = 'Faith-based online classes from a Biblical worldview. Learn Judicial Prayer and break out of old patterns. From Barbara Kohler, MS, CRC, LCMHC (NC), LPC (SC), NCC.',
+  description: descriptionProp,
   ogImage = ogFallback,
 } = Astro.props;
+// Pages may pass an empty string (e.g. a Sanity page with no SEO description
+// set yet), so fall through on blank — not just on undefined.
+const description = (descriptionProp || '').trim() || S.metaDescription || FALLBACK.metaDescription;
 const currentYear = new Date().getFullYear();
 const siteOrigin = (Astro.site && Astro.site.toString().replace(/\/$/, '')) || '';
 const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href : Astro.url.pathname;

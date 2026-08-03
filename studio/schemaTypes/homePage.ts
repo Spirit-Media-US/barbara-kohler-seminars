@@ -104,6 +104,35 @@ export default defineType({
 			group: 'about',
 		}),
 		defineField({ name: 'headshot', title: 'Headshot', type: 'image', group: 'about', options: { hotspot: true } }),
+		defineField({
+			name: 'aboutPracticeNote',
+			title: 'Counseling-practice note (last line)',
+			description:
+				'The closing line under Meet Barbara — e.g. "For Barbara’s private practice in Christian counseling, visit The Kohler Group, PLLC." Highlight text and use the link button to link it.',
+			type: 'array',
+			of: [
+				{
+					type: 'block',
+					styles: [{ title: 'Normal', value: 'normal' }],
+					lists: [],
+					marks: {
+						decorators: [
+							{ title: 'Bold', value: 'strong' },
+							{ title: 'Italic', value: 'em' },
+						],
+						annotations: [
+							{
+								name: 'link',
+								title: 'Link',
+								type: 'object',
+								fields: [{ name: 'href', title: 'URL', type: 'url' }],
+							},
+						],
+					},
+				},
+			],
+			group: 'about',
+		}),
 
 		// Subscribe / eBook
 		defineField({ name: 'subscribeEyebrow', title: 'Subscribe Eyebrow', type: 'string', group: 'subscribe' }),
@@ -111,6 +140,43 @@ export default defineType({
 		defineField({ name: 'subscribeBody', title: 'Subscribe Body', type: 'text', rows: 3, group: 'subscribe' }),
 		defineField({ name: 'subscribeFinePrint', title: 'Subscribe Fine Print', type: 'string', group: 'subscribe' }),
 		defineField({ name: 'ebookCover', title: 'eBook Cover', type: 'image', group: 'subscribe' }),
+		defineField({
+			name: 'ebookFile',
+			title: 'eBook file (PDF)',
+			description:
+				'The PDF emailed to subscribers and offered as the download. Upload a new file here to replace the eBook — no developer needed. Remember to update the cover above to match.',
+			type: 'file',
+			options: { accept: '.pdf' },
+			group: 'subscribe',
+		}),
+		defineField({
+			name: 'ebookButtonLabel',
+			title: 'Form button label',
+			type: 'string',
+			description: 'Default: "Send my eBook"',
+			group: 'subscribe',
+		}),
+		defineField({
+			name: 'ebookSuccessHeading',
+			title: 'After-submit heading',
+			type: 'string',
+			description: 'Default: "Check your inbox — your eBook is on the way."',
+			group: 'subscribe',
+		}),
+		defineField({
+			name: 'ebookSuccessBody',
+			title: 'After-submit line above the download button',
+			type: 'string',
+			description: 'Default: "We also emailed you the link. Prefer it now?"',
+			group: 'subscribe',
+		}),
+		defineField({
+			name: 'ebookDownloadLabel',
+			title: 'Download button label',
+			type: 'string',
+			description: 'Default: "Download the eBook"',
+			group: 'subscribe',
+		}),
 	],
 	preview: { prepare: () => ({ title: 'Home Page' }) },
 });
