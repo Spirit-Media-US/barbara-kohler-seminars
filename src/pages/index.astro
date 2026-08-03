@@ -33,7 +33,7 @@ const KG = settings?.kohlerGroupUrl || 'https://www.thekohlergroup.net';
 const primary = courses.find((c) => c.status === 'available') || courses[0] || {};
 const lessons = primary.lessons || [];
 const HEADSHOT = h.headshot ? urlFor(h.headshot).width(680).url() : `${R2}/barbara-kohler.jpg`;
-const EBOOK = h.ebookCover ? urlFor(h.ebookCover).width(400).url() : `${R2}/ebook-cover.png`;
+const EBOOK = h.ebookCover ? urlFor(h.ebookCover).width(400).url() : `${R2}/ebook-cover-v2.png`;
 const heroCtaLabel = `Enroll in Level One${primary.price ? ` — ${primary.price}` : ''}`;
 const seminarPhotos = h.seminarPhotos || [];
 const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto('format').url();
@@ -182,7 +182,7 @@ const photoUrl = (p: any) => urlFor(p).width(800).height(1067).fit('crop').auto(
             <h2 id="about-h">{h.aboutName}</h2>
             <p class="creds">{h.aboutCreds}</p>
             {(h.aboutParagraphs || []).map((para: string) => <p>{para}</p>)}
-            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href={KG} target="_blank" rel="noopener noreferrer">The Kohler Group</a>.</p>
+            <p>For Barbara&rsquo;s private practice in Christian counseling, visit <a href={KG} target="_blank" rel="noopener noreferrer">The Kohler Group, PLLC</a>.</p>
             <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
               <a class="btn btn-sapphire" href={YT} target="_blank" rel="noopener noreferrer">YouTube Channel</a>
               <a class="btn btn-outline-sapphire" href={FB} target="_blank" rel="noopener noreferrer">Follow on Facebook</a>
