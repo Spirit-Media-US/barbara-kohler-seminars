@@ -1,0 +1,64 @@
+---
+// Renders a Sanity `contentPage` document (legal pages, etc.) so all body copy,
+// the "last updated" date and the SEO strings are client-editable in the Studio.
+// The page files under src/pages/ are thin wrappers that pass a slug.
+import Layout from '../layouts/Layout.astro';
+import { renderPortableText } from '../lib/portableText';
+import { safeFetch } from '../lib/sanity';
+
+interface Props {
+  slug: string;
+  /** Used only if the Sanity document is missing (see note below). */
+  fallbackTitle: string;
+}
+
+const { slug, fallbackTitle } = Astro.props;
+
+const page = await safeFetch<any>(
+  `*[_type=="contentPage" && slug==$slug][0]{title,slug,lastUpdated,seoTitle,seoDescription,body}`,
+  { slug },
+  {},
+);
+
+// These are legal pages linked from the global footer, so the URL must never
+// 404 or render blank even if the document is unpublished/deleted by mistake.
+// If the body is missing we still render the heading plus a contact line rather
+// than an empty page.
+const title = page?.title || fallbackTitle;
+const bodyHtml = renderPortableText(page?.body);
+const updated = page?.lastUpdated
+  ? new Date(page.lastUpdated).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    })
+  : '';
+---
+<Layout title={page?.seoTitle || `${title} | Barbara Kohler Seminars`} description={page?.seoDescription || ''}>
+  <main id="top">
+    <section class="legal">
+      <div class="wrap">
+        <span class="eyebrow on-light">Legal</span>
+        <h1>{title}</h1>
+        {updated && <p class="updated">Last updated: {updated}</p>}
+        {bodyHtml
+          ? <div class="legal-body" set:html={bodyHtml} />
+          : <p>This page is being updated. For help in the meantime, email <a href="mailto:barbara@barbarakohlerseminars.com">barbara@barbarakohlerseminars.com</a>.</p>}
+      </div>
+    </section>
+  </main>
+</Layout>
+<style>
+  .legal{padding:64px 0 88px;background:#fff}
+  .legal .wrap{max-width:760px}
+  .legal h1{font-size:34px;color:var(--navy-ink);margin:8px 0 6px}
+  .updated{color:#6a7686;font-size:14px;margin-bottom:24px}
+  .legal :global(.legal-body h2){font-size:20px;color:var(--navy-ink);margin:30px 0 10px}
+  .legal :global(.legal-body h3){font-size:17px;color:var(--navy-ink);margin:24px 0 8px}
+  .legal p,.legal :global(.legal-body p),.legal :global(.legal-body li){line-height:1.7;color:#2a2a2a}
+  .legal :global(.legal-body ul),.legal :global(.legal-body ol){padding-left:22px}
+  .legal :global(.legal-body li){margin-bottom:8px}
+  .legal a,.legal :global(.legal-body a){color:var(--sapphire);font-weight:600}
+  .legal :global(.legal-body blockquote){margin:22px 0;padding:12px 20px;border-left:3px solid var(--gold);background:var(--paper-soft);font-style:italic}
+</style>

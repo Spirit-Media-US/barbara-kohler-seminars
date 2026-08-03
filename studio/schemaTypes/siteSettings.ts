@@ -8,6 +8,14 @@ export default defineType({
 		defineField({ name: 'siteName', title: 'Site Name', type: 'string' }),
 		defineField({ name: 'tagline', title: 'Tagline', type: 'string' }),
 		defineField({
+			name: 'metaDescription',
+			title: 'Default search description',
+			type: 'text',
+			rows: 3,
+			description:
+				'The summary search engines show for pages that do not set their own (including the home page). Mentions of credentials live here, not in code.',
+		}),
+		defineField({
 			name: 'topBar',
 			title: 'Top Bar Message',
 			type: 'string',

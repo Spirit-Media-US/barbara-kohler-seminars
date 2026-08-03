@@ -1,5 +1,9 @@
 ---
+// Copy lives in Sanity (Pages → Thank You) so the client can edit it. The
+// fallbacks below reproduce the original hardcoded copy exactly, so the page is
+// never blank if the document is missing.
 import Layout from '../layouts/Layout.astro';
+import { renderPortableText } from '../lib/portableText';
 import { safeFetch } from '../lib/sanity';
 
 const settings = await safeFetch<any>(
@@ -9,31 +13,55 @@ const settings = await safeFetch<any>(
 );
 const EMAIL = settings?.barbaraEmail || 'barbara@barbarakohlerseminars.com';
 const YT = settings?.youtube || 'https://www.youtube.com/@barbarakohlerseminarspllc1709';
+
+const page = await safeFetch<any>(
+  `*[_type=="contentPage" && slug=="thank-you"][0]{
+    heroEyebrow,heroHeading,heroSubline,ctaPrimaryLabel,ctaSecondaryLabel,seoTitle,seoDescription,body
+  }`,
+  {},
+  {},
+);
+
+const eyebrow = page?.heroEyebrow || 'Welcome to Level One';
+const heading = page?.heroHeading || 'You’re enrolled — thank you!';
+const subline = page?.heroSubline || 'Your payment for From Script to Scroll is confirmed.';
+const ctaPrimary = page?.ctaPrimaryLabel || 'Back to home';
+const ctaSecondary = page?.ctaSecondaryLabel || 'Watch Barbara on YouTube';
+const bodyHtml = renderPortableText(page?.body);
 ---
-<Layout title="You're Enrolled | Barbara Kohler Seminars" description="Thank you for enrolling in Level One — From Script to Scroll.">
+<Layout
+  title={page?.seoTitle || "You're Enrolled | Barbara Kohler Seminars"}
+  description={page?.seoDescription || 'Thank you for enrolling in Level One — From Script to Scroll.'}
+>
   <Fragment slot="head"><meta name="robots" content="noindex, nofollow" /></Fragment>
   <main id="top">
     <section class="hero" aria-labelledby="ty-h">
       <div class="wrap">
-        <span class="eyebrow">Welcome to Level One</span>
-        <h1 id="ty-h">You&rsquo;re enrolled &mdash; thank you!</h1>
-        <p class="hero-verse">Your payment for <b style="display:inline">From Script to Scroll</b> is confirmed.</p>
+        <span class="eyebrow">{eyebrow}</span>
+        <h1 id="ty-h">{heading}</h1>
+        <p class="hero-verse">{subline}</p>
         <div class="scroll-rule center"><span></span></div>
       </div>
     </section>
 
     <section class="ty-body">
       <div class="wrap">
-        <h2>What happens next</h2>
-        <ol class="ty-steps">
-          <li><strong>Check your email.</strong> Your receipt and course-access details are on their way to the address you used at checkout. If you don&rsquo;t see it within a few minutes, please check your spam or promotions folder.</li>
-          <li><strong>Save the sender.</strong> Add <a href={`mailto:${EMAIL}`}>{EMAIL}</a> to your contacts so future lessons and updates land in your inbox.</li>
-          <li><strong>Questions?</strong> Reply to your receipt email or reach Barbara directly at <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</li>
-        </ol>
+        {bodyHtml ? (
+          <div class="ty-copy" set:html={bodyHtml} />
+        ) : (
+          <>
+            <h2>What happens next</h2>
+            <ol class="ty-steps">
+              <li><strong>Check your email.</strong> Your receipt and course-access details are on their way to the address you used at checkout. If you don&rsquo;t see it within a few minutes, please check your spam or promotions folder.</li>
+              <li><strong>Save the sender.</strong> Add <a href={`mailto:${EMAIL}`}>{EMAIL}</a> to your contacts so future lessons and updates land in your inbox.</li>
+              <li><strong>Questions?</strong> Reply to your receipt email or reach Barbara directly at <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</li>
+            </ol>
+          </>
+        )}
 
         <div class="ty-ctas">
-          <a class="btn btn-sapphire" href="/">Back to home</a>
-          <a class="btn btn-outline-sapphire" href={YT}>Watch Barbara on YouTube</a>
+          <a class="btn btn-sapphire" href="/">{ctaPrimary}</a>
+          <a class="btn btn-outline-sapphire" href={YT}>{ctaSecondary}</a>
         </div>
       </div>
     </section>
@@ -42,9 +70,10 @@ const YT = settings?.youtube || 'https://www.youtube.com/@barbarakohlerseminarsp
 
 <style>
   .ty-body{padding:64px 0 88px;background:#fff}
-  .ty-body h2{font-size:26px;color:var(--navy-ink);margin:0 0 22px}
-  .ty-steps{max-width:720px;margin:0;padding-left:22px;line-height:1.7;color:#2a2a2a}
-  .ty-steps li{margin-bottom:16px}
-  .ty-steps a{color:var(--sapphire);font-weight:600}
+  .ty-body h2,.ty-body :global(.ty-copy h2){font-size:26px;color:var(--navy-ink);margin:0 0 22px}
+  .ty-steps,.ty-body :global(.ty-copy ol),.ty-body :global(.ty-copy ul){max-width:720px;margin:0;padding-left:22px;line-height:1.7;color:#2a2a2a}
+  .ty-steps li,.ty-body :global(.ty-copy li){margin-bottom:16px}
+  .ty-steps a,.ty-body :global(.ty-copy a){color:var(--sapphire);font-weight:600}
+  .ty-body :global(.ty-copy p){max-width:720px;line-height:1.7;color:#2a2a2a;margin:0 0 16px}
   .ty-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
 </style>
