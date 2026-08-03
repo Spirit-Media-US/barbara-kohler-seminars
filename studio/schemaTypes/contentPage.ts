@@ -21,6 +21,7 @@ export default defineType({
 					{ title: 'Privacy Policy (/privacy)', value: 'privacy' },
 					{ title: 'Terms of Service (/terms)', value: 'terms' },
 					{ title: 'Refund Policy (/refund-policy)', value: 'refund-policy' },
+					{ title: 'Blog index header (/blog)', value: 'blog' },
 					{ title: 'Thank You (after checkout)', value: 'thank-you' },
 					{ title: 'Page Not Found (404)', value: 'not-found' },
 				],

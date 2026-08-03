@@ -1,6 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { sanityClient, urlFor } from '../lib/sanity';
+import { safeFetch, sanityClient, urlFor } from '../lib/sanity';
+
+// Header copy is editable in Sanity (Pages → Blog index header).
+const head = await safeFetch<any>(
+  `*[_type=="contentPage" && slug=="blog"][0]{heroEyebrow,heroHeading,heroSubline,seoTitle,seoDescription}`,
+  {},
+  {},
+);
+const headEyebrow = head?.heroEyebrow || 'The Blog';
+const headHeading = head?.heroHeading || 'Teaching, encouragement & insight';
+const headSubline =
+  head?.heroSubline || 'Reflections on faith, healing, and lasting change — from Barbara Kohler and the team.';
 
 const posts = await sanityClient.fetch(
   `*[_type=="blogPost" && defined(slug.current)] | order(publishDate desc){
@@ -19,12 +30,15 @@ const fmt = (d: string) => {
 const img = (p: any) =>
   p.heroImage ? urlFor(p.heroImage).width(800).height(480).format('webp').url() : null;
 ---
-<Layout title="Blog | Barbara Kohler Seminars" description="Teaching, encouragement, and Biblical insight from Barbara Kohler Seminars.">
+<Layout
+  title={head?.seoTitle || 'Blog | Barbara Kohler Seminars'}
+  description={head?.seoDescription || 'Teaching, encouragement, and Biblical insight from Barbara Kohler Seminars.'}
+>
   <section class="blog-head">
     <div class="wrap">
-      <span class="eyebrow">The Blog</span>
-      <h1>Teaching, encouragement &amp; insight</h1>
-      <p class="lede">Reflections on faith, healing, and lasting change &mdash; from Barbara Kohler and the team.</p>
+      <span class="eyebrow">{headEyebrow}</span>
+      <h1>{headHeading}</h1>
+      <p class="lede">{headSubline}</p>
     </div>
   </section>
 
