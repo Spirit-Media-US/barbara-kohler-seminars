@@ -15,7 +15,7 @@ const SITE_URL =
 
 export default defineConfig({
   site: SITE_URL,
-  integrations: [sitemap({ filter: (page) => !page.includes('/thank-you') })],
+  integrations: [sitemap({ filter: (page) => !page.includes('/thank-you') && !page.includes('/course/') })],
   build: {
     // Total CSS for this site is small (~9KB), so inline it all into <head>.
     // This avoids the FOUC that 'auto' + async-css causes here: the whole
