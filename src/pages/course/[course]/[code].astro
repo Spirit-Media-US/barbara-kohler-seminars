@@ -1,0 +1,91 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { safeFetch } from '../../../lib/sanity';
+
+// Unlisted course delivery pages (Sanity "Course Delivery Pages"). Reached only from
+// the enrollment welcome email: noindex, excluded from the sitemap, not in nav.
+export async function getStaticPaths() {
+  const pages = await safeFetch(
+    `*[_type=="coursePortal" && defined(courseSlug) && defined(accessCode)]{
+      title, courseSlug, accessCode, eyebrow, welcome, signOff, workbookUrl, workbookLabel,
+      videos[]{title, vimeoId}
+    }`,
+    {},
+    [],
+  );
+  return (pages || []).map((p) => ({
+    params: { course: p.courseSlug, code: p.accessCode },
+    props: { page: p },
+  }));
+}
+
+const { page: p } = Astro.props;
+const welcome = p.welcome || [];
+const videos = (p.videos || []).filter((v) => v && v.vimeoId);
+---
+<Layout title={`${p.title} | Barbara Kohler Seminars`} description={`${p.title} — course materials.`}>
+  <Fragment slot="head"><meta name="robots" content="noindex, nofollow" /></Fragment>
+  <main id="top">
+    <section class="course-hero" aria-labelledby="cp-h">
+      <div class="wrap">
+        {p.eyebrow && <span class="eyebrow">{p.eyebrow}</span>}
+        <h1 id="cp-h">{p.title}</h1>
+        {p.workbookUrl && (
+          <div class="hero-ctas">
+            <a class="btn btn-gold" href={p.workbookUrl} target="_blank" rel="noopener noreferrer">{p.workbookLabel || 'Download the workbook (PDF)'}</a>
+          </div>
+        )}
+        <div class="scroll-rule center"><span></span></div>
+      </div>
+    </section>
+
+    <section class="course-body">
+      <div class="wrap">
+        {welcome.map((t) => <p>{t}</p>)}
+        {p.signOff && <p class="signoff">{p.signOff}</p>}
+
+        {videos.length > 0 && (
+          <ol class="videos">
+            {videos.map((v, i) => (
+              <li>
+                <h2>{v.title}</h2>
+                <div class="player">
+                  <iframe
+                    src={`https://player.vimeo.com/video/${v.vimeoId}?dnt=1`}
+                    title={v.title}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+
+        {p.workbookUrl && (
+          <div class="course-cta">
+            <a class="btn btn-gold" href={p.workbookUrl} target="_blank" rel="noopener noreferrer">{p.workbookLabel || 'Download the workbook (PDF)'}</a>
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .course-hero{background:radial-gradient(1100px 520px at 78% -10%, rgba(226,185,59,.14), transparent 60%),linear-gradient(165deg, var(--navy-ink) 0%, var(--sapphire-deep) 58%, var(--sapphire) 115%);color:#fff;padding:76px 0 72px;text-align:center}
+  .course-hero .wrap{max-width:820px}
+  .course-hero .eyebrow{display:block;margin-bottom:14px}
+  .course-hero h1{font-size:40px;line-height:1.1;margin:0 0 14px}
+  .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:22px 0 8px}
+  .course-body{padding:56px 0 88px;background:#fff}
+  .course-body .wrap{max-width:820px}
+  .course-body > .wrap > p{font-size:18px;line-height:1.75;color:#2a2a2a;margin:0 0 18px}
+  .videos{list-style:none;padding:0;margin:40px 0 0;display:grid;gap:40px}
+  .videos h2{font-size:22px;color:var(--navy-ink);margin:0 0 12px}
+  .player{position:relative;aspect-ratio:16/9;max-width:100%;background:var(--navy-ink);border-radius:8px;overflow:hidden}
+  .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .course-cta{margin-top:48px;text-align:center}
+  @media (max-width:640px){.course-hero h1{font-size:30px}}
+</style>
