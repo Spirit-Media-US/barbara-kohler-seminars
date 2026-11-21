@@ -1,4 +1,5 @@
 ---
+import MailtoLink from '../components/MailtoLink.astro';
 // Barbara Kohler Seminars — site shell (header + footer + brand CSS).
 // Content is Sanity-driven (siteSettings) with hardcoded fallbacks so the
 // build never breaks if Sanity is unreachable or a field is empty.
@@ -272,7 +273,7 @@ const canonicalURL = siteOrigin ? new URL(Astro.url.pathname, siteOrigin).href :
             <h4>Contact</h4>
             <ul class="foot-list">
               <li><a href={TEL}>{PHONE}</a></li>
-              <li><a href="mailto:Ashley.Bostic@barbarakohlerseminars.com">Email Barbara&rsquo;s Manager, Ashley Bostic, BSBA</a></li>
+              <li><MailtoLink email="Ashley.Bostic@barbarakohlerseminars.com">Email Barbara&rsquo;s Manager, Ashley Bostic, BSBA</MailtoLink></li>
               <li>{addressLines.map((ln, i) => (<>{i > 0 && <br />}{ln}</>))}</li>
             </ul>
           </div>

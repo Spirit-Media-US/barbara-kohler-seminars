@@ -89,5 +89,32 @@ export function renderPortableText(blocks: any[]): string {
 		else out.push(`<p>${html}</p>`);
 	}
 	flush();
-	return out.join('');
+	return protectEmails(out.join(''));
+}
+
+// Kevin 2026-11-20 RULE: "we DO NOT ever post emails directly on any of our websites ... I always says
+// mailto: link." CMS copy may carry an address (a mailto: link whose text is the address, or a bare
+// address). Neither may reach the HTML: each becomes a link that carries the address split
+// (data-mu / data-md, the MailtoLink pattern — the MailtoLink script in the Layout writes the mailto:
+// in the browser) with WORDS as its text.
+const EMAIL_RX = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}/g;
+const EMAIL_TEST = new RegExp(EMAIL_RX.source);
+const GENERIC = new Set(['info', 'office', 'hello', 'support', 'contact', 'admin', 'team', 'help']);
+function emailLabel(addr: string): string {
+	const local = addr.split('@')[0].split(/[._-]/)[0].toLowerCase();
+	return GENERIC.has(local) ? 'email us' : local.charAt(0).toUpperCase() + local.slice(1);
+}
+function splitLink(addr: string, label: string): string {
+	const [u, d] = addr.split('@');
+	return `<a href="#" data-mu="${u}" data-md="${d}">${label}</a>`;
+}
+export function protectEmails(html: string): string {
+	const linked = html.replace(/<a href="mailto:([^"?]+)[^"]*"[^>]*>([\s\S]*?)<\/a>/gi, (_m, addr: string, text: string) =>
+		splitLink(addr, EMAIL_TEST.test(text) || !text.trim() ? emailLabel(addr) : text),
+	);
+	// Bare addresses left in text (never inside a tag: split on tags first).
+	return linked
+		.split(/(<[^>]+>)/)
+		.map((part) => (part.startsWith('<') ? part : part.replace(EMAIL_RX, (a) => splitLink(a, emailLabel(a)))))
+		.join('');
 }
