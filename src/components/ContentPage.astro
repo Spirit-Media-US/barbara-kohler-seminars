@@ -1,4 +1,5 @@
 ---
+import MailtoLink from './MailtoLink.astro';
 // Renders a Sanity `contentPage` document (legal pages, etc.) so all body copy,
 // the "last updated" date and the SEO strings are client-editable in the Studio.
 // The page files under src/pages/ are thin wrappers that pass a slug.
@@ -44,7 +45,7 @@ const updated = page?.lastUpdated
         {updated && <p class="updated">Last updated: {updated}</p>}
         {bodyHtml
           ? <div class="legal-body" set:html={bodyHtml} />
-          : <p>This page is being updated. For help in the meantime, email <a href="mailto:barbara@barbarakohlerseminars.com">barbara@barbarakohlerseminars.com</a>.</p>}
+          : <p>This page is being updated. For help in the meantime, <MailtoLink email="barbara@barbarakohlerseminars.com">email Barbara</MailtoLink>.</p>}
       </div>
     </section>
   </main>
